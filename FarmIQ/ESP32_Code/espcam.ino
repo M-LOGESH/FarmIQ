@@ -2,8 +2,8 @@
 #include "ESPAsyncWebServer.h"
 #include "esp_camera.h"
 
-#define WIFI_SSID "realme 12x 5G"
-#define WIFI_PASSWORD "qwerty123"
+#define WIFI_SSID "WIFI SSID"
+#define WIFI_PASSWORD "Password"
 
 // AI THINKER ESP32-CAM Pin Definition
 #define PWDN_GPIO_NUM  32

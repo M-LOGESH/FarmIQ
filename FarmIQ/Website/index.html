@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Agricultural Farmers Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="C:\FarmIQ\Website\css\styles.css">
+</head>
+<body>
+    <div class="header">AGRICULTURE DASHBOARD</div>
+
+    <div class="curved-section">
+        <h1>CLOUD - INTEGRATED IOT SYSTEM FOR SOIL MONITORING AND CROP MANAGEMENT</h1>
+        <p style="margin-top: 6px;font-size: 18px; font-family: Geneva; letter-spacing: 1px;">(Crop Monitoring and Analysis)</p>
+
+        <!-- Smooth Centered Curve -->
+        <svg viewBox="0 0 1440 320">
+            <path fill="#edffec" 
+                d="M0,250 C300,200 1000,400 1440,280 L1440,320 L0,320 Z">
+            </path>
+        </svg>
+    </div>
+    <div class="data-container">
+        <div class="section-header">
+            <h2 style="font-family: Calibri; font-size: 25px;">Soil Moisture Tracking</h2>
+            <button class="section-btn" onclick="window.location.href='irrigation.html'">View Details
+                <div class="arrow-wrapper">
+                    <div class="arrow"></div>
+                </div>
+            </button>
+        </div>
+        
+        <div class="moisture-container">
+            <div class="water-drop-icon">
+                <i class="fas fa-tint"></i> <!-- Water Drop Icon -->
+            </div>
+            <h2>SOIL MOISTURE</h2>
+            <div class="progress-ring">
+                <svg width="120" height="120">
+                    <circle class="progress-bg" cx="60" cy="60" r="45" stroke-width="10"/>
+                    <circle class="progress-bar" cx="60" cy="60" r="45" stroke-width="10"/>
+                </svg>
+                <div id="moisture_value" class="moisture-text">Loading...</div>
+            </div>
+        </div>
+         
+        <div class="section-header">
+            <h2 style="font-family: Calibri; font-size: 25px;">Soil Nutrient Analysis</h2>
+            <button class="section-btn" onclick="window.location.href='analysis.html'">View Details
+                <div class="arrow-wrapper">
+                    <div class="arrow"></div>
+                </div>
+            </button>
+        </div>
+
+        <!-- NPK Levels -->
+        <div class="npk-container">
+            <div class="card">
+                <div class="card-header">
+                    <img src="C:\Project\FINAL YEAR PROJECT\Demofinal7\img\N1.jpg" alt="Nitrogen">
+                    <h2>Nitrogen (N)</h2>
+                </div>
+                <div class="card-body">
+                    <h2>Nitrogen Value</h2>
+                    <p class="npk-value" id="n_value">Loading...</p>
+                </div>
+            </div>
+        
+            <div class="card">
+                <div class="card-header">
+                    <img src="C:\Project\FINAL YEAR PROJECT\Demofinal7\img\P1.jpg" alt="Phosphorus">
+                    <h2>Phosphorus (P)</h2>
+                </div>
+                <div class="card-body">
+                    <h2>Phosphorus Value</h2>
+                    <p class="npk-value" id="p_value">Loading...</p>
+                </div>
+            </div>
+        
+            <div class="card">
+                <div class="card-header">
+                    <img src="C:\Project\FINAL YEAR PROJECT\Demofinal7\img\K1.jpg" alt="Potassium">
+                    <h2>Potassium (K)</h2>
+                </div>
+                <div class="card-body">
+                    <h2>Potassium Value</h2>
+                    <p class="npk-value" id="k_value">Loading...</p>
+                </div>
+            </div>
+        
+        </div>
+        <div class="data-header">
+            <h2>Crop Irrigation Status</h2>
+                        <!-- Crop Dropdown -->
+            <div class="dropdown-container">
+                <div id="cropDropdownContainer" class="custom-dropdown">
+                    <div id="cropDropdownDisplay" class="dropdown-selected">Select Option</div>
+                    <div id="cropDropdownOptions" class="dropdown-options"></div>
+                </div>
+            </div>
+            <div class="btn-container">
+                <div class="switch btn-color-mode-switch">
+                    <input value="1" id="color_mode" name="color_mode" type="checkbox">
+                    <label for="color_mode" class="btn-color-mode-switch-inner" data-off="Auto" data-on="Manual"></label>
+                </div>
+            </div>
+        </div>
+        <div class="motor-container" id="motorContainer">
+            <i class="fas fa-cog motor-icon" id="motorIcon"></i>
+            <h1>MOTOR CONTROL</h1>
+            <div id="motorToggle" class="toggle-switch">
+                <div class="toggle-knob"></div>
+            </div>
+        </div>
+        <a href="livecrop.html" class="button">
+            <span>LIVE CROP MONITORING</span>
+            <div class="arrow">→</div>
+        </a>
+        
+    </div>
+        <script type="module" src="C:\FarmIQ\Website\js\script.js"></script>
+</body>
+</html>
+

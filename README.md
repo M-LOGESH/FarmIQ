@@ -1,22 +1,29 @@
 This system integrates IoT, cloud storage, machine learning, and a responsive web interface to create a real-time smart agricultural solution.
 
-🧩 System Workflow
+## 🧩 System Workflow
 
-1. The ESP32 microcontroller collects real-time data from connected sensors, including soil moisture readings.
+* The ESP32 microcontroller collects real-time data from connected sensors, primarily for soil moisture monitoring.
 
-2. Collected data is pushed to Firebase Realtime Database using HTTP and MQTT protocols for real-time storage and access.
+* Sensor data is transmitted to Firebase Realtime Database using HTTP and MQTT protocols for cloud storage and real-time access.
 
-3. The ESP32-CAM module captures live crop images when the user clicks the “Capture” button on the web dashboard. The image is uploaded to Firebase and displayed for remote field monitoring.
+* The ESP32-CAM captures live crop field images upon request. When the user clicks the "Capture" button on the dashboard, the image is uploaded to Firebase and displayed for remote inspection.
 
-4. Irrigation is managed by an ESP32-controlled L298N motor driver that operates a water pump:
-- Manual Mode: Users can directly switch the pump ON/OFF through the web dashboard.
-- Auto Mode: The system uses crop-specific moisture thresholds and weather forecast data (via OpenWeatherMap API) to schedule irrigation. The pump turns off automatically when the optimal moisture level is reached or rain is expected.
+* The irrigation system uses an L298N motor driver controlled by an ESP32:
 
-5. All features are integrated into a responsive web dashboard (built with HTML, CSS, and JavaScript), which provides:
-- Real-time sensor monitoring
-- Motor control options
-- Weather updates
-- Crop prediction and insights
+  * In Manual Mode: Users can directly control the pump from the web dashboard.
+  * In Auto Mode: The system automatically manages irrigation based on crop-specific moisture thresholds and weather forecasts from the OpenWeatherMap API, skipping watering during expected rainfall.
+
+* The system integrates a machine learning-based crop recommendation engine:
+
+  * The frontend collects NPK, temperature, humidity, and season data.
+  * These inputs are sent to a Flask API that hosts a Random Forest model.
+  * The model returns the top 5 suitable crops with confidence scores, which are visualized as a bar chart on the dashboard.
+
+* All monitoring, prediction, and control functionalities are presented through a user-friendly, responsive HTML/CSS/JavaScript web dashboard.
+
+* The architecture is modular and scalable for future enhancements like AI-based disease detection, historical yield analysis, and multi-farm support.
+
+---
 
 
 ### 🤖 Machine Learning Crop Recommendation

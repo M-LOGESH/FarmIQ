@@ -2,12 +2,12 @@
 #include <Firebase_ESP_Client.h>
 
 // Wi-Fi Credentials
-#define WIFI_SSID "realme 12x 5G"
-#define WIFI_PASSWORD "qwerty123"
+#define WIFI_SSID "WIFI SSID"
+#define WIFI_PASSWORD "Password"
 
 // Firebase Configuration
-#define API_KEY "AIzaSyA7-Xn6_bhsELUCNXNeY6xTvSMZMZvUhIc"
-#define DATABASE_URL "https://demofinal77-default-rtdb.asia-southeast1.firebasedatabase.app/"
+#define API_KEY "Firebase API KEY"
+#define DATABASE_URL "Firebase URL"
 
 // Firebase objects
 FirebaseData firebaseData;

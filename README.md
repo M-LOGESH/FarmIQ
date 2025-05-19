@@ -79,22 +79,19 @@ An ML engine built using RandomForestClassifier helps suggest suitable crops bas
 
 ---
 
-Here are concise 2-line descriptions for each of your dashboard pages, suitable for your README.md:
-
----
-
-### Agriculture Dashboard Homepage
+### Homepage
 A central dashboard displaying real-time soil moisture, nutrient levels (NPK), crop irrigation status, and live crop camera feed. Designed for intuitive navigation and rapid smart farm monitoring.
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="650">
 </p>
 
+
 ### Crop Monitoring
 Live Crop Monitoring provides real-time visual surveillance of the field using ESP32-CAM, enabling early detection of issues and better crop management.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/9106e771-117f-4596-81de-9c385a04d0b3" alt="Image" width="800">
+  <img src="https://github.com/user-attachments/assets/9106e771-117f-4596-81de-9c385a04d0b3" alt="Image" width="700">
 </p>
 
 
@@ -102,23 +99,25 @@ Live Crop Monitoring provides real-time visual surveillance of the field using E
 Combines live NPK sensor readings and weather data with user inputs to predict suitable crops. Features real-time visualizations, crop recommendations, and a prediction probability chart.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/2c4ac729-e30d-488e-b4e8-10aca7e8cdba" alt="Image" width="800">
+  <img src="https://github.com/user-attachments/assets/2c4ac729-e30d-488e-b4e8-10aca7e8cdba" alt="Image" width="700">
 </p>
 
 Allows manual entry of NPK, temperature, humidity, and season to get AI-based crop recommendations. Uses a Flask-hosted machine learning model to display the top crops with probabilities.
+
 
 ### Irrigation Control Dashboard
 Displays soil moisture level, pump status, and date/time while allowing manual or automatic irrigation control. Integrates weather forecasts to make intelligent irrigation decisions.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/872db852-2147-4e9a-a8cd-c7fca63be1b4" alt="Image" width="800">
+  <img src="https://github.com/user-attachments/assets/872db852-2147-4e9a-a8cd-c7fca63be1b4" alt="Image" width="700">
 </p>
+
 
 ### Crop Irrigation Customization
 Lets users define crop-specific irrigation schedules including moisture thresholds and time slots. Crop data is stored and updated dynamically using Firestore for persistent and synced control.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/1d761029-9161-4e78-9f52-03dae50e4d25" alt="Image" width="800">
+  <img src="https://github.com/user-attachments/assets/1d761029-9161-4e78-9f52-03dae50e4d25" alt="Image" width="700">
 </p>
 
 

@@ -1,3 +1,5 @@
+# Cloud Integrated IoT System for Soil Monitoring and Crop Management
+
 This system integrates IoT, cloud storage, machine learning, and a responsive web interface to create a real-time smart agricultural solution.
 
 ## 🧩 System Workflow

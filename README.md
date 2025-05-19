@@ -90,6 +90,13 @@ A central dashboard displaying real-time soil moisture, nutrient levels (NPK), c
   <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
 </p>
 
+### Crop Monitoring
+Live Crop Monitoring provides real-time visual surveillance of the field using ESP32-CAM, enabling early detection of issues and better crop management.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
+</p>
+
 
 ### Analytical Dashboard
 Combines live NPK sensor readings and weather data with user inputs to predict suitable crops. Features real-time visualizations, crop recommendations, and a prediction probability chart.

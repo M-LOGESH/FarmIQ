@@ -79,7 +79,7 @@ An ML engine built using RandomForestClassifier helps suggest suitable crops bas
 
 ---
 
-![Home Page](https://user-images.githubusercontent.com/12345678/your-image.png)
+![Home Page]([https://user-images.githubusercontent.com/12345678/your-image.png](https://github.com/M-LOGESH/FarmIQ/issues/1#issue-3072931229))
 
 
 

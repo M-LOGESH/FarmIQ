@@ -17,7 +17,7 @@ This system integrates IoT, cloud storage, machine learning, and a responsive we
 - Motor control options
 - Weather updates
 - Crop prediction and insights
----
+
 
 ### 🤖 Machine Learning Crop Recommendation
 

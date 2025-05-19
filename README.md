@@ -77,4 +77,9 @@ An ML engine built using RandomForestClassifier helps suggest suitable crops bas
 * Robust against noise, missing inputs, and imbalance
 * Feature importance helps track critical soil and weather features
 
+---
+
+![Home Page](https://user-images.githubusercontent.com/12345678/your-image.png)
+
+
 

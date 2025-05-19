@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NPK Analytical Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: flex-start;
+            align-items: center;
+            background-color: #000000;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+        }
+
+        /* Dashboard Title & Info Bar */
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 95%;
+            margin-top: 20px;
+        }
+
+        .dashboard-title {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ffffff;
+            font-family: Calibri;
+        }
+
+        /* Info Bar */
+        .info-bar {
+            display: flex;
+            gap: 20px;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-icon {
+            font-size: 18px;
+            color: #FFA500;
+        }
+
+        .container {
+            display: flex;
+            flex-wrap: wrap; /* Allow the cards to wrap */
+            justify-content: space-between; /* Distribute the cards evenly */
+            margin-top: 30px;
+            width: 100%; /* Full width */
+            padding: 0 20px; /* Padding on the sides */
+            box-sizing: border-box; /* Ensure padding doesn't overflow */
+        }
+
+        .card {
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1 1 30%; /* Each card takes up at least 30% of the container's width */
+            max-width: 33%; /* Ensure each card doesn't exceed 33% */
+            display: flex;
+            align-items: center;
+            justify-content: space-around; /* Align circle and label horizontally */
+            box-sizing: border-box;
+            margin-bottom: 20px; /* Space between cards on smaller screens */
+        }
+
+        .progress-ring {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .progress-ring circle {
+            fill: none;
+            stroke-width: 10;
+            stroke-linecap: round;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+            transition: stroke-dasharray 0.5s ease-in-out;
+        }
+
+        .progress-bg {
+            stroke: #ddd;
+        }
+
+        .progress-bar-n {
+            stroke: #FFA500; 
+        }
+
+        .value {
+            font-size: 30px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-left: 25%; /* Space between circle and value */
+        }
+
+        .icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
+            color: #ffffff;
+        }
+
+        p {
+            font-size: 25px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 20px;
+        }
+
+        .motor-container {
+            background-color: #333;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            flex: 1 1 30%; /* Each card takes up at least 30% of the container's width */
+            max-width: 33%; /* Ensure each card doesn't exceed 33% */
+            display: flex;
+            align-items: center;
+            justify-content: space-around; /* Align circle and label horizontally */
+            box-sizing: border-box;
+            margin-bottom: 20px; /* Space between cards on smaller screens */
+            color: white;
+        }
+
+        .motor-icon {
+            font-size: 70px;
+            color: #ddd;
+            transition: transform 1s ease;
+        }
+
+        .motor-container.on .motor-icon {
+            color: #FFA500;
+            animation: spin 2s linear infinite; /* Continuous rotation when on */
+        }
+
+        .motor-container.off .motor-icon {
+            animation: spin-back 1s ease forwards; /* Smooth backward rotation when off */
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes spin-back {
+            from { transform: rotate(360deg); }
+            to { transform: rotate(0deg); }
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 70px;
+            height: 35px;
+            background-color: #ddd;
+            border-radius: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .toggle-switch.on {
+            background-color: #FFA500;
+        }
+
+        .toggle-knob {
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 28px;
+            height: 28px;
+            background-color: #FFA500;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .toggle-switch.on .toggle-knob {
+            left: 38px;
+            background-color: #ffffff;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 10px;
+            }
+            .card {
+                max-width: 45%; /* Allow two cards per row on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                max-width: 100%; /* Cards will take up the full width on very small screens */
+            }
+        }
+
+        .time-icon {
+            font-size:80px;
+            color: #ddd;
+            transition: transform 1s ease;
+        }
+
+        .time-value {
+            font-size: 30px;
+            font-weight: bold;
+            color: #FFA500;
+        }
+
+        /* Styling for Date */
+        .date-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 5px;
+        }
+
+        .weather-container {
+            background: #333;
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Current Weather */
+        .current-weather {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.467);
+            border-radius: 10px;
+            flex: 1;
+            margin-right: 1%;
+        }
+
+        .weather-icon {
+            font-size: 60px;
+            margin-left: 15px;
+        }
+
+        .temperature-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+        }
+
+        .temperature {
+            font-size: 30px;
+            font-weight: bold;
+            color: #FFA500;
+        }
+
+        .condition {
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 5px;
+        }
+
+        .date-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-right: 15px;
+        }
+
+        .date {
+            font-size: 25px;
+            font-weight: bold;
+            color: #f0f0f0;
+        }
+
+        .rain-status {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 5px;
+        }
+
+        /* Forecast Cards */
+        .forecast-container {
+            display: flex;
+            justify-content: space-between;
+            flex: 2.5;
+            gap: 10px;
+        }
+
+        .forecast-card {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.319);
+            border-radius: 10px;
+            width: calc(100% / 3 - 10px);
+        }
+
+        .forecast-icon {
+            font-size: 40px;
+        }
+
+        .forecast-details {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            align-items: center;
+        }
+
+        .forecast-temp {
+            font-size: 23px;
+            font-weight: bold;
+            text-align: center;
+            flex: 1;
+            color: #FFA500;
+        }
+
+        .forecast-date-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            margin-right: 15px;
+        }
+
+        .forecast-date {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .forecast-rain {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-top: 5px;
+        }
+
+        .water-container {
+            width: 95%;
+            margin: 20px auto;
+            background: #333;
+            padding: 15px;
+            border-radius: 10px;
+            color: #ffffff;
+        }
+        
+        .water-container h2{
+            margin-top: 10px;
+        }
+
+        .alarm-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #222;
+            padding: 10px 50px;
+            border-radius: 8px;
+            width: 80%;
+            margin: 20px auto; /* Center horizontally */
+            position: relative;
+        }
+
+        .time-container {
+            flex: 15;
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .toggle-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex: 1;
+        }
+
+        .remove-btn {
+            cursor: pointer;
+            font-size: 25px;
+            font-weight: bolder;
+            color: red;
+            flex: 1;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 40px;
+            background-color: #222;
+            border: 1px solid #555;
+            max-height: 160px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+            width: 100%;
+        }
+
+        .dropdown div {
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            color: white;
+        }
+
+        .dropdown div:hover {
+            background-color: #FFA500;
+        }
+
+        .time-input {
+            width: 50px;
+            padding: 10px;
+            text-align: center;
+            background-color: #000000;
+            color: white;
+            border: 1px solid white;
+            cursor: pointer;
+        }
+
+        .add-btn {
+            cursor: pointer;
+            font-size: 40px;
+            float: right;
+        }
+
+        .water-container h2 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-left: 2%;
+        }
+
+        .dropdown-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: flex-end;
+            width: 30%;
+            margin-right: 2%;
+        }
+
+        .custbtn {
+            background-color: #FFA500; /* Green */
+            color: white;
+            padding: 12px 24px;
+            font-size: 18px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            height: 40px;
+        }
+
+        .custbtn:hover {
+            background-color: #d48a00;
+        }
+
+        .crop-detail{
+            background-color:#222;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 90%;
+        }
+
+        .time-label {
+            font-weight: bold;
+            margin-right: 5px;
+            font-size: 25px;
+            font-family: Cambria;
+        }
+
+        .custom-dropdown {
+            position: relative;
+            width: 200px;
+            background:#000000;
+            border: 2px solid #FFA500;
+            border-radius: 8px;
+            cursor: pointer;
+            user-select: none;
+            text-align: center;
+        }
+
+        .dropdown-selected {
+            padding: 5px;
+            font-size: 18px;
+        }
+
+        .dropdown-options {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background:#333;
+            color: white;
+            border-radius: 5px;
+            display: none;
+            z-index: 300;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 18px;
+            padding: 5px;
+        }
+
+        .dropdown-options div {
+            padding: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .dropdown-options div:hover {
+            background:#FFA500;
+            color: white;
+        }
+
+        .show-options {
+            display: block;
+        }
+
+   
+    </style>
+</head>
+<body>
+    <div class="dashboard-header">
+        <div class="dashboard-title">Irrigation Dashboard</div>
+        <div class="info-bar">
+            <div class="info-item">
+                <i class="fas fa-tint info-icon"></i>
+                <span>Humidity: <span id="humidity-info">--%</span></span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-sun info-icon"></i>
+                <span>Season: <span id="season-info">Loading...</span></span>
+            </div>
+            <div class="info-item">
+                <i class="fas fa-map-marker-alt info-icon"></i>
+                <span>Place: <span id="location-info">Sivaganga</span></span>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="progress-ring">
+                <svg width="120" height="120">
+                    <circle class="progress-bg" cx="60" cy="60" r="50" />
+                    <circle class="progress-bar progress-bar-n" cx="60" cy="60" r="50" />
+                </svg>
+                <div class="icon"><i class="fas fa-tint"></i></div>
+            </div>
+            <div class="info-section">
+                <p>Soil Moisture</p>
+                <div class="value" id="valueN">0%</div>
+            </div>
+        </div>
+
+         <div class="motor-container" id="motorContainer">
+                <i class="fas fa-cog motor-icon" id="motorIcon"></i>
+                <p>Motor State</p>
+                <div id="motorToggle" class="toggle-switch">
+                    <div class="toggle-knob"></div>
+                </div>
+            </div>
+
+        <div class="card">
+        <div class="time-icon"><i class="fas fa-clock"></i></div>
+        <div class="info-section">
+            <div class="time-value" id="time-info">Loading...</div>
+            <div class="date-value" id="date-info">Loading...</div>
+        </div>
+        </div>
+    </div>
+    <div class="weather-container">
+        <!-- Current Weather -->
+        <div class="current-weather">
+            <div class="weather-icon"><i id="weather-icon" class="fas fa-cloud"></i></div>
+            <div class="temperature-info">
+                <div class="temperature" id="temperature-info">Loading...</div>
+                <div class="condition" id="weather-condition">Fetching...</div>
+            </div>
+            <div class="date-info">
+                <div class="date" id="current-date">--</div>
+                <div class="rain-status" id="rain-status">Checking...</div>
+            </div>
+        </div>
+    
+        <!-- 3-Day Forecast -->
+        <div class="forecast-container">
+            <div class="forecast-card">
+                <div class="forecast-icon"><i id="day1-icon" class="fas fa-cloud"></i></div>
+                <div class="forecast-details">
+                    <div class="forecast-temp" id="day1-temp">--°C</div>
+                    <div class="forecast-date-container">
+                        <div class="forecast-date" id="day1-date">--</div>
+                        <div class="forecast-rain" id="day1-rain">Checking...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="forecast-card">
+                <div class="forecast-icon"><i id="day2-icon" class="fas fa-cloud"></i></div>
+                <div class="forecast-details">
+                    <div class="forecast-temp" id="day2-temp">--°C</div>
+                    <div class="forecast-date-container">
+                        <div class="forecast-date" id="day2-date">--</div>
+                        <div class="forecast-rain" id="day2-rain">Checking...</div>
+                    </div>
+                </div>
+            </div>
+            <div class="forecast-card">
+                <div class="forecast-icon"><i id="day3-icon" class="fas fa-cloud"></i></div>
+                <div class="forecast-details">
+                    <div class="forecast-temp" id="day3-temp">--°C</div>
+                    <div class="forecast-date-container">
+                        <div class="forecast-date" id="day3-date">--</div>
+                        <div class="forecast-rain" id="day3-rain">Checking...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="water-container">
+        <h2>
+            Irrigation Time 
+            <div class="crop-detail">
+                <span id="selectedCrop">Crop: None</span> | 
+                <span id="optimalMoisture">Optimal Moisture: --%</span>
+            </div>
+            <div class="dropdown-container">
+                <!-- Customize Button -->
+                 <a href="customize.html">
+                    <button class="custbtn">Customize</button>
+                </a>
+  
+                <div id="cropDropdownContainer" class="custom-dropdown">
+                    
+                    <div id="cropDropdownDisplay" class="dropdown-selected">Select Option</div>
+                    <div id="cropDropdownOptions" class="dropdown-options"></div>
+                </div>
+                <span class="add-btn" id="addAlarmBtn" style="cursor:pointer; color:#FFA500;">+</span>
+            </div>
+        </h2>       
+        <div id="alarmContainer"></div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, onValue, set, push, remove, get } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+    
+        const firebaseConfig = {
+            apiKey: "API KEY",
+            authDomain: "AuthDomain",
+            databaseURL: "Firebase URL",
+            projectId: "Project ID",
+            storageBucket: "Storage Bucket",
+            messagingSenderId: "Messaging Sender ID",
+            appId: "App ID"
+        };
+    
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+        const firestore = getFirestore(app);
+    
+        let smValues = { N: 0 };
+        let season = "";
+    
+        function updateProgressBar(element, value) {
+            const circumference = 314;  
+            const progress = (value / 100) * circumference;
+            element.style.strokeDasharray = `${progress} ${circumference}`;
+        }
+    
+        function updateValue(elementId, value) {
+            document.getElementById(elementId).textContent = `${value}%`;
+        }
+    
+        onValue(ref(database, "/soil_moisture/wet_percentage"), (snapshot) => {
+            smValues.N = snapshot.val() || 0;
+            updateValue("valueN", smValues.N); // Update displayed value
+            updateProgressBar(document.querySelector(".progress-bar-n"), smValues.N);
+        });
+
+        function updateUI(elementId, value) {
+            document.getElementById(elementId).innerText = value;
+        }
+
+
+const motorRef = ref(database, "motor/state");
+const alarmRef = ref(database, "alarms");
+const selectedCropRef = ref(database, "selected_crop");
+const motorToggle = document.getElementById("motorToggle");
+const motorContainer = document.getElementById("motorContainer");
+
+onValue(motorRef, (snapshot) => {
+    const isOn = snapshot.val() === "on";
+    motorToggle.classList.toggle("on", isOn);
+    motorContainer.classList.toggle("on", isOn);
+    motorContainer.classList.toggle("off", !isOn);
+});
+
+motorToggle.addEventListener("click", async () => {
+    try {
+        const snapshot = await get(motorRef);
+        await set(motorRef, snapshot.val() === "on" ? "off" : "on");
+    } catch (error) {
+        console.error("Error toggling motor state:", error);
+    }
+});
+  
+
+document.getElementById("addAlarmBtn").addEventListener("click", () => {
+    const newAlarmRef = push(alarmRef);
+    set(newAlarmRef, { time: "12:00 AM", enabled: false });
+});
+
+onValue(alarmRef, (snapshot) => {
+    document.getElementById("alarmContainer").innerHTML = "";
+    snapshot.forEach(child => {
+        const alarmData = child.val();
+        addAlarmToDOM(child.key, alarmData.time, alarmData.enabled);
+    });
+});
+
+const cropDropdown = document.getElementById("cropDropdownDisplay");
+const cropDropdownOptions = document.getElementById("cropDropdownOptions");
+const selectedCropDisplay = document.getElementById("selectedCrop");
+const optimalMoistureDisplay = document.getElementById("optimalMoisture");
+
+async function fetchCrops() {
+    try {
+        const cropsCollection = collection(firestore, "crops");
+        const cropSnapshot = await getDocs(cropsCollection);
+
+        cropDropdownOptions.innerHTML = ""; // Clear previous options
+        cropDropdown.textContent = "Select Crop";
+
+        cropSnapshot.forEach(doc => {
+            const cropData = doc.data();
+            const cropname = doc.id;
+
+            const option = document.createElement("div");
+            option.classList.add("dropdown-option");
+            option.textContent = cropname;
+            option.dataset.moisture = cropData.optimal_moisture || "--";
+            option.dataset.alarms = JSON.stringify(cropData.alarms || []);
+
+            option.addEventListener("click", async () => {
+                const cropName = option.textContent;
+                const optimalMoisture = option.dataset.moisture;
+                const alarmTimes = JSON.parse(option.dataset.alarms);
+
+                // Update UI
+                cropDropdown.textContent = cropName;
+                selectedCropDisplay.textContent = `Crop: ${cropName}`;
+                optimalMoistureDisplay.textContent = `Optimal Moisture: ${optimalMoisture}%`;
+
+                // Store selected crop to Firebase
+                await set(selectedCropRef, {
+                    cropName: cropName,
+                    optimalMoisture: optimalMoisture
+                });
+
+                cropDropdownOptions.classList.remove("show-options");
+
+                await addCropAlarms(alarmTimes);
+            });
+
+            cropDropdownOptions.appendChild(option);
+        });
+
+        // Load previously selected crop
+        //await loadSelectedCropFromFirebase();
+
+    } catch (error) {
+        console.error("Error fetching crops:", error);
+    }
+}
+
+onValue(selectedCropRef, (snapshot) => {
+    console.log("Realtime update detected:", snapshot.val()); // Debugging log
+
+    if (snapshot.exists()) {
+        const data = snapshot.val();
+        selectedCropDisplay.textContent = `Crop: ${data.cropName}`;
+        optimalMoistureDisplay.textContent = `Optimal Moisture: ${data.optimalMoisture}%`;
+        cropDropdown.textContent = data.cropName || "Select Crop";
+    } else {
+        console.log("No crop selected.");
+    }
+});
+
+
+async function addCropAlarms(alarmTimes) {
+    try {
+        await set(alarmRef, {});
+        if (!alarmTimes.length) return;
+
+        for (const time of alarmTimes) {
+            const newAlarmRef = push(alarmRef);
+            await set(newAlarmRef, { time, enabled: true });
+        }
+    } catch (error) {
+        console.error("Error updating alarms:", error);
+    }
+}
+
+cropDropdown.addEventListener("click", () => {
+    cropDropdownOptions.classList.toggle("show-options");
+});
+
+document.addEventListener("click", (e) => {
+    if (!document.getElementById("cropDropdownContainer").contains(e.target)) {
+        cropDropdownOptions.classList.remove("show-options");
+    }
+});
+
+fetchCrops();
+
+setInterval(async () => {
+    const now = new Date();
+    const currentHour = now.getHours();
+    const currentMinute = now.getMinutes();
+    const currentPeriod = currentHour >= 12 ? "PM" : "AM";
+    const formattedHour = ((currentHour + 11) % 12 + 1).toString().padStart(2, "0");
+    const formattedMinute = currentMinute.toString().padStart(2, "0");
+    const currentTime = `${formattedHour}:${formattedMinute} ${currentPeriod}`;
+
+    try {
+        const [soilMoistureSnapshot, motorStateSnapshot, motorModeSnapshot, alarmSnapshot, selectedCropSnapshot] = await Promise.all([
+            get(ref(database, "/soil_moisture/wet_percentage")),
+            get(ref(database, "/motor/state")),
+            get(ref(database, "/motor/mode")),
+            get(alarmRef),
+            get(selectedCropRef)
+        ]);
+
+        const soilMoisture = soilMoistureSnapshot.val() || 0;
+        const motorState = motorStateSnapshot.val();
+        const motorMode = motorModeSnapshot.val()?.toLowerCase() || "auto";
+        const optimalMoisture = parseInt(selectedCropSnapshot.val()?.optimalMoisture || "100");
+
+        if (motorMode === "auto") {
+            let motorShouldBeOn = false;
+            let alarmIsEnabled = false;
+
+            alarmSnapshot.forEach(child => {
+                const alarmData = child.val();
+                if (alarmData.enabled) {
+                    alarmIsEnabled = true;
+                    if (alarmData.time === currentTime && soilMoisture < optimalMoisture) {
+                        motorShouldBeOn = true;
+                    }
+                }
+            });
+
+            if (motorState === "off" && motorShouldBeOn) {
+                set(ref(database, "/motor/state"), "on");
+            } else if (motorState === "on" && (!alarmIsEnabled || soilMoisture >= optimalMoisture)) {
+                set(ref(database, "/motor/state"), "off");
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}, 10000);
+
+function addAlarmToDOM(alarmId, time, enabled) {
+    const alarmCard = document.createElement("div");
+    alarmCard.classList.add("alarm-card");
+
+    const [timePart, period] = time.split(" ");
+    const [setHour, setMinute] = timePart.split(":");
+
+    const timeContainer = document.createElement("div");
+    timeContainer.classList.add("time-container");
+
+    const timeLabel = document.createElement("span");
+    timeLabel.textContent = "Time : ";
+    timeLabel.classList.add("time-label");
+    timeContainer.appendChild(timeLabel);
+
+    const hourInput = createDropdown(setHour, 1, 12, "hour");
+    const minuteInput = createDropdown(setMinute, 0, 59, "minute");
+    const ampmInput = createDropdown(period, ["AM", "PM"], null, "ampm");
+
+    timeContainer.appendChild(hourInput.container);
+    timeContainer.appendChild(document.createTextNode(":"));
+    timeContainer.appendChild(minuteInput.container);
+    timeContainer.appendChild(ampmInput.container);
+
+    const alarmToggleBtn = document.createElement("div");
+    alarmToggleBtn.classList.add("toggle-switch");
+    if (enabled) {
+        alarmToggleBtn.classList.add("on");
+    }
+    alarmToggleBtn.addEventListener("click", async () => {
+        const alarmSnapshot = await get(ref(database, `alarms/${alarmId}/enabled`));
+        const newEnabledState = alarmSnapshot.val() === true ? false : true;
+        set(ref(database, `alarms/${alarmId}/enabled`), newEnabledState);
+    });
+
+    const alarmToggleKnob = document.createElement("div");
+    alarmToggleKnob.classList.add("toggle-knob");
+    alarmToggleBtn.appendChild(alarmToggleKnob);
+
+    const removeBtn = document.createElement("span");
+    removeBtn.classList.add("remove-btn");
+    removeBtn.textContent = "X";
+    removeBtn.addEventListener("click", () => {
+        remove(ref(database, `alarms/${alarmId}`));
+    });
+
+    alarmCard.appendChild(timeContainer);
+    alarmCard.appendChild(alarmToggleBtn);
+    alarmCard.appendChild(removeBtn);
+
+    document.getElementById("alarmContainer").appendChild(alarmCard);
+
+    function createDropdown(defaultValue, min, max, type) {
+        const container = document.createElement("div");
+        container.style.position = "relative";
+
+        const input = document.createElement("div");
+        input.classList.add("time-input");
+        input.textContent = defaultValue;
+        container.appendChild(input);
+
+        const dropdown = document.createElement("div");
+        dropdown.classList.add("dropdown");
+        container.appendChild(dropdown);
+
+        if (Array.isArray(min)) {
+            min.forEach(value => {
+                let option = document.createElement("div");
+                option.textContent = value;
+                dropdown.appendChild(option);
+                option.addEventListener("click", () => {
+                    input.textContent = value;
+                    dropdown.style.display = "none";
+                    updateAlarmTime();
+                });
+            });
+        } else {
+            for (let i = min; i <= max; i++) {
+                let value = i.toString().padStart(2, "0");
+                let option = document.createElement("div");
+                option.textContent = value;
+                dropdown.appendChild(option);
+                option.addEventListener("click", () => {
+                    input.textContent = value;
+                    dropdown.style.display = "none";
+                    updateAlarmTime();
+                });
+            }
+        }
+
+        input.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        document.addEventListener("click", (event) => {
+            if (!container.contains(event.target)) {
+                dropdown.style.display = "none";
+            }
+        });
+
+        return { container, input };
+    }
+
+    function updateAlarmTime() {
+        const newTime = `${hourInput.input.textContent}:${minuteInput.input.textContent} ${ampmInput.input.textContent}`;
+        set(ref(database, `alarms/${alarmId}/time`), newTime);
+    }
+}
+
+
+    function updateISTTime() {
+    const now = new Date();
+    
+    // Convert to IST using the 'Asia/Kolkata' timezone
+    const istTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Kolkata' }));
+
+    let hours = istTime.getHours();
+    const minutes = String(istTime.getMinutes()).padStart(2, '0');
+    const seconds = String(istTime.getSeconds()).padStart(2, '0');
+    const ampm = hours >= 12 ? 'PM' : 'AM';
+
+    hours = hours % 12 || 12;
+
+    const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+    document.getElementById("time-info").innerText = timeString;
+
+    // Get the correct day, month, and date
+    const options = { weekday: 'long', month: 'long', day: 'numeric' };
+    const dateString = istTime.toLocaleDateString('en-US', options);
+    
+    document.getElementById("date-info").innerText = dateString;
+}
+
+setInterval(updateISTTime, 1000);
+updateISTTime();
+
+
+const apiKey = "OpenWeatherMap API KEY";
+const city = "Sivaganga";
+
+function getSeason(month) {
+    if (month === 12 || month <= 2) return "Winter";
+    if (month >= 3 && month <= 5) return "Summer";
+    if (month >= 6 && month <= 9) return "Southwest Monsoon";
+    return "Northeast Monsoon";
+}
+
+function getWeatherIcon(condition) {
+    if (condition.includes("cloud")) return "fas fa-cloud";
+    if (condition.includes("rain")) return "fas fa-cloud-showers-heavy";
+    if (condition.includes("clear")) return "fas fa-sun";
+    if (condition.includes("storm")) return "fas fa-bolt";
+    if (condition.includes("snow")) return "fas fa-snowflake";
+    return "fas fa-smog";
+}
+
+function checkRainCondition(condition) {
+    return condition.includes("rain") || condition.includes("storm") || condition.includes("drizzle") ? "🌧️ Rain Expected" : "⛅ No Rain";
+}
+
+async function fetchWeatherData() {
+    const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city},IN&appid=${apiKey}&units=metric`;
+    const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city},IN&appid=${apiKey}&units=metric`;
+
+    try {
+        const currentResponse = await fetch(currentWeatherUrl);
+        const currentData = await currentResponse.json();
+        if (currentData.cod === 200) {
+            document.getElementById("temperature-info").innerHTML = `${currentData.main.temp}°C`;
+            document.getElementById("current-date").innerHTML = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            document.getElementById("weather-condition").innerHTML = currentData.weather[0].description;
+            document.getElementById("weather-icon").className = getWeatherIcon(currentData.weather[0].description.toLowerCase());
+            document.getElementById("rain-status").innerHTML = checkRainCondition(currentData.weather[0].description.toLowerCase());
+            document.getElementById("humidity-info").textContent = `${currentData.main.humidity}%`;
+            document.getElementById("season-info").textContent = getSeason(new Date().getMonth() + 1);
+        }
+      // Fetch 3-day forecast (starting from tomorrow)
+        const forecastResponse = await fetch(forecastUrl);
+        const forecastData = await forecastResponse.json();
+        if (forecastData.cod === "200") {
+            const dailyData = forecastData.list.filter(item => item.dt_txt.includes("12:00:00"));
+
+            for (let i = 0; i < 3; i++) { // Start from tomorrow (index 1)
+                const date = new Date(dailyData[i+1].dt * 1000);
+                document.getElementById(`day${i+1}-temp`).innerHTML = `${dailyData[i].main.temp}°C`;
+                document.getElementById(`day${i+1}-date`).innerHTML = date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                document.getElementById(`day${i+1}-icon`).className = getWeatherIcon(dailyData[i].weather[0].description.toLowerCase());
+                document.getElementById(`day${i+1}-rain`).innerHTML = checkRainCondition(dailyData[i].weather[0].description.toLowerCase());
+            }
+        }
+    } catch (error) {
+        console.error("Error fetching weather data:", error);
+    }
+}
+
+window.onload = fetchWeatherData;
+        
+    </script>
+</body>
+</html>

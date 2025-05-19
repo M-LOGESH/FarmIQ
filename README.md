@@ -79,7 +79,8 @@ An ML engine built using RandomForestClassifier helps suggest suitable crops bas
 
 ---
 
-![Image](https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25)
+<img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
+
 
 
 

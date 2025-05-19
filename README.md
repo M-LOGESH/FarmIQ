@@ -95,7 +95,7 @@ A central dashboard displaying real-time soil moisture, nutrient levels (NPK), c
 Combines live NPK sensor readings and weather data with user inputs to predict suitable crops. Features real-time visualizations, crop recommendations, and a prediction probability chart.
 
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
+  <img src="https://github.com/user-attachments/assets/2c4ac729-e30d-488e-b4e8-10aca7e8cdba" alt="Image" width="600">
 </p>
 
 Allows manual entry of NPK, temperature, humidity, and season to get AI-based crop recommendations. Uses a Flask-hosted machine learning model to display the top crops with probabilities.

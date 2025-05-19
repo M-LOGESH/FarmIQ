@@ -79,9 +79,50 @@ An ML engine built using RandomForestClassifier helps suggest suitable crops bas
 
 ---
 
+Here are concise 2-line descriptions for each of your dashboard pages, suitable for your README.md:
+
+---
+
+### Agriculture Dashboard Homepage
+A central dashboard displaying real-time soil moisture, nutrient levels (NPK), crop irrigation status, and live crop camera feed. Designed for intuitive navigation and rapid smart farm monitoring.
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
 </p>
+
+
+### Analytical Dashboard
+Combines live NPK sensor readings and weather data with user inputs to predict suitable crops. Features real-time visualizations, crop recommendations, and a prediction probability chart.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
+</p>
+
+Allows manual entry of NPK, temperature, humidity, and season to get AI-based crop recommendations. Uses a Flask-hosted machine learning model to display the top crops with probabilities.
+
+### Irrigation Control Dashboard
+Displays soil moisture level, pump status, and date/time while allowing manual or automatic irrigation control. Integrates weather forecasts to make intelligent irrigation decisions.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
+</p>
+
+### Crop Irrigation Customization
+Lets users define crop-specific irrigation schedules including moisture thresholds and time slots. Crop data is stored and updated dynamically using Firestore for persistent and synced control.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/3aef7c0d-9283-4880-928b-427203209d25" alt="Image" width="600">
+</p>
+
+
+
+This project successfully integrates IoT, cloud services, and machine learning to enable smart, data-driven agriculture. It provides real-time monitoring, intelligent crop recommendations, and automated irrigation control through a user-friendly dashboard. The system enhances productivity, conserves resources, and empowers farmers with modern precision farming tools.
+
+---
+
+
+
+
 
 
 

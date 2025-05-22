@@ -104,7 +104,7 @@ Combines live NPK sensor readings and weather data with user inputs to predict s
   <img src="https://github.com/user-attachments/assets/2c4ac729-e30d-488e-b4e8-10aca7e8cdba" alt="Image" width="700">
 </p>
 
-Allows manual entry of NPK, temperature, humidity, and season to get AI-based crop recommendations. Uses a Flask-hosted machine learning model to display the top crops with probabilities.
+Allows manual entry of NPK, temperature, humidity, and season to get ML-based crop recommendations. Uses a Flask-hosted machine learning model to display the top crops with probabilities.
 
 
 ### Irrigation Control Dashboard

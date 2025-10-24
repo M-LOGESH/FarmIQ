@@ -9,7 +9,8 @@ export default defineConfig({
         main: 'index.html',
         analysis: 'src/pages/analysis.html',
         irrigation: 'src/pages/irrigation.html',
-        livecrop: 'src/pages/livecrop.html'
+        livecrop: 'src/pages/livecrop.html',
+        customize: 'src/pages/customize.html'
       }
     }
   }

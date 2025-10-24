@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>FarmIQ</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+  </head>
+  <body
+    class="bg-linear-to-br from-green-50 to-emerald-100 font-sans min-h-screen"
+  >
+    <!-- Enhanced Header -->
+    <header
+      class="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-lg border-b border-green-200"
+    >
+      <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-10 h-10 bg-linear-to-r from-green-600 to-emerald-500 rounded-lg flex items-center justify-center"
+            >
+              <i class="fas fa-leaf text-white text-lg"></i>
+            </div>
+            <div>
+              <h1 class="text-xl font-bold text-gray-800">FarmIQ</h1>
+              <p class="text-xs text-green-600">Smart Agriculture Dashboard</p>
+            </div>
+          </div>
+
+          <!-- Navigation Menu -->
+          <nav class="hidden md:flex items-center space-x-6">
+            <a
+              href="#"
+              class="text-green-700 font-medium hover:text-green-600 transition-colors"
+              >Dashboard</a
+            >
+            <a
+              href="analysis.html"
+              class="text-gray-600 hover:text-green-600 transition-colors"
+              >Analytics</a
+            >
+            <a
+              href="irrigation.html"
+              class="text-gray-600 hover:text-green-600 transition-colors"
+              >Irrigation</a
+            >
+            <a
+              href="livecrop.html"
+              class="text-gray-600 hover:text-green-600 transition-colors"
+              >Live Monitoring</a
+            >
+          </nav>
+
+          <!-- Mobile Menu Button -->
+          <button id="mobileMenuButton" class="md:hidden text-gray-600">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Sidebar -->
+    <div
+      id="mobileSidebar"
+      class="fixed inset-0 z-50 transform translate-x-full transition-transform duration-300 md:hidden"
+    >
+      <!-- Backdrop -->
+      <div class="absolute inset-0 bg-black/0" id="sidebarBackdrop"></div>
+
+      <!-- Sidebar Content -->
+      <div class="absolute right-0 top-0 h-full w-64 bg-white shadow-xl">
+        <!-- Sidebar Header -->
+        <div
+          class="flex items-center justify-between p-4 border-b border-gray-200"
+        >
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-8 h-8 bg-linear-to-r from-green-600 to-emerald-500 rounded-lg flex items-center justify-center"
+            >
+              <i class="fas fa-leaf text-white text-sm"></i>
+            </div>
+            <span class="font-bold text-gray-800">FarmIQ</span>
+          </div>
+          <button id="closeSidebar" class="text-gray-500 hover:text-gray-700">
+            <i class="fas fa-times text-lg"></i>
+          </button>
+        </div>
+
+        <!-- Sidebar Navigation -->
+        <nav class="p-4 space-y-4">
+          <a
+            href="#"
+            class="flex items-center space-x-3 p-3 text-green-700 bg-green-50 rounded-lg font-medium"
+          >
+            <i class="fas fa-chart-dashboard w-5"></i>
+            <span>Dashboard</span>
+          </a>
+          <a
+            href="analysis.html"
+            class="flex items-center space-x-3 p-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          >
+            <i class="fas fa-chart-bar w-5"></i>
+            <span>Analytics</span>
+          </a>
+          <a
+            href="irrigation.html"
+            class="flex items-center space-x-3 p-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          >
+            <i class="fas fa-tint w-5"></i>
+            <span>Irrigation</span>
+          </a>
+          <a
+            href="livecrop.html"
+            class="flex items-center space-x-3 p-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          >
+            <i class="fas fa-eye w-5"></i>
+            <span>Live Monitoring</span>
+          </a>
+          <a
+            href="customize.html"
+            class="flex items-center space-x-3 p-3 text-gray-600 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+          >
+            <i class="fas fa-cog w-5"></i>
+            <span>Customize</span>
+          </a>
+        </nav>
+
+        <!-- Sidebar Footer -->
+        <div
+          class="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200"
+        >
+          <div class="text-center text-sm text-gray-500">FarmIQ</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+      <!-- Welcome Section -->
+      <div class="mb-8 text-center">
+        <h2
+          class="text-xl sm:text-3xl md:text-4xl font-bold text-gray-800 mb-2"
+        >
+          Farm Monitoring Dashboard
+        </h2>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+          Real-time soil analytics and smart irrigation control for optimal crop
+          growth
+        </p>
+      </div>
+
+      <!-- Stats Overview -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div class="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">Soil Moisture</p>
+              <p class="text-2xl font-bold text-gray-800" id="moisture_value">
+                Loading...
+              </p>
+            </div>
+            <div
+              class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-tint text-green-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="w-full bg-gray-200 rounded-full h-2">
+              <div
+                id="moistureProgress"
+                class="bg-green-500 h-2 rounded-full transition-all duration-500"
+                style="width: 0%"
+              ></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">Motor Status</p>
+              <p class="text-2xl font-bold text-gray-800" id="motorStatus">
+                OFF
+              </p>
+            </div>
+            <div
+              class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-power-off text-red-500 text-xl"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-xs text-gray-500">Last updated: Just now</span>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">Active Crop</p>
+              <p class="text-2xl font-bold text-gray-800" id="activeCrop">
+                None
+              </p>
+            </div>
+            <div
+              class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-seedling text-blue-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-xs text-gray-500" id="optimalMoistureDisplay"
+              >Optimal: --%</span
+            >
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 shadow-lg border border-green-100">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-gray-500 text-sm">System Mode</p>
+              <p class="text-2xl font-bold text-gray-800" id="systemMode">
+                Auto
+              </p>
+            </div>
+            <div
+              class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center"
+            >
+              <i class="fas fa-robot text-purple-600 text-xl"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <span class="text-xs text-gray-500">Smart irrigation enabled</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Left Column - Soil Analytics -->
+        <div class="lg:col-span-2 space-y-4">
+          <!-- Soil Moisture Card -->
+          <div
+            class="bg-linear-to-r from-green-500 to-emerald-600 rounded-3xl p-6 shadow-xl text-white"
+          >
+            <div class="flex flex-col md:flex-row items-center justify-between">
+              <!-- Left: Water Drop Icon -->
+              <div class="flex items-center mb-6 md:mb-0">
+                <div
+                  class="w-18 h-18 sm:w-24 sm:h-24 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm border-4 border-white/30"
+                >
+                  <i class="fas fa-tint text-xl sm:text-4xl"></i>
+                </div>
+              </div>
+
+              <!-- Center: SOIL MOISTURE Text -->
+              <div class="text-center mb-6 md:mb-0">
+                <h2 class="text-xl sm:text-3xl font-bold mb-2">
+                  SOIL MOISTURE
+                </h2>
+                <p class="text-green-100 text-sm sm:text-lg">Current Level</p>
+              </div>
+
+              <!-- Right: Progress Circle with Percentage -->
+              <div
+                class="relative w-24 h-24 md:w-28 md:h-28 flex justify-center"
+              >
+                <svg class="w-full h-full" viewBox="0 0 120 120">
+                  <!-- Background Circle -->
+                  <circle
+                    cx="60"
+                    cy="60"
+                    r="54"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.3)"
+                    stroke-width="8"
+                  />
+                  <!-- Progress Circle -->
+                  <circle
+                    id="progressBar"
+                    cx="60"
+                    cy="60"
+                    r="54"
+                    fill="none"
+                    stroke="white"
+                    stroke-width="8"
+                    stroke-linecap="round"
+                    transform="rotate(-90 60 60)"
+                    stroke-dasharray="339.292"
+                    stroke-dashoffset="339.292"
+                  />
+                </svg>
+                <!-- Percentage Text in Center -->
+                <div class="absolute inset-0 flex items-center justify-center">
+                  <span
+                    id="moisture_value_large"
+                    class="text-xl md:text-2xl font-bold"
+                    >0%</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- NPK Levels -->
+          <div
+            class="bg-white rounded-3xl p-6 shadow-lg border border-green-100"
+          >
+            <div class="flex justify-between items-center mb-8">
+              <h3 class="text-xl sm:text-2xl font-bold text-gray-800">
+                Soil Nutrient Analysis
+              </h3>
+              <button
+                id="analysisDetailsBtn"
+                class="bg-green-600 hover:bg-green-700 text-white text-sm sm:text-md px-4 sm:px-6 py-2 sm:py-3 rounded-xl font-semibold transition-colors duration-300"
+              >
+                Analysis Report
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <!-- Nitrogen -->
+              <div
+                class="bg-linear-to-br from-green-400 to-green-500 rounded-2xl p-6 text-white text-center transform hover:scale-105 transition-transform duration-300 group relative overflow-hidden"
+              >
+                <div
+                  class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300"
+                ></div>
+                <div class="relative z-10">
+                  <div
+                    class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white/30"
+                  >
+                    <img
+                      src="/img/N1.jpg"
+                      alt="Nitrogen"
+                      class="w-16 h-16 rounded-full object-cover border-2 border-white"
+                    />
+                  </div>
+                  <h4 class="text-lg font-bold mb-2">Nitrogen (N)</h4>
+                  <p class="text-3xl font-bold mb-2" id="n_value">0%</p>
+                  <div class="w-full bg-white/30 rounded-full h-2">
+                    <div
+                      id="n_progress"
+                      class="bg-white h-2 rounded-full transition-all duration-500"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <p class="text-white/80 text-sm mt-2">Plant Growth</p>
+                </div>
+              </div>
+
+              <!-- Phosphorus -->
+              <div
+                class="bg-linear-to-br from-orange-400 to-orange-500 rounded-2xl p-6 text-white text-center transform hover:scale-105 transition-transform duration-300 group relative overflow-hidden"
+              >
+                <div
+                  class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300"
+                ></div>
+                <div class="relative z-10">
+                  <div
+                    class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white/30"
+                  >
+                    <img
+                      src="/img/P1.jpg"
+                      alt="Phosphorus"
+                      class="w-16 h-16 rounded-full object-cover border-2 border-white"
+                    />
+                  </div>
+                  <h4 class="text-lg font-bold mb-2">Phosphorus (P)</h4>
+                  <p class="text-3xl font-bold mb-2" id="p_value">0%</p>
+                  <div class="w-full bg-white/30 rounded-full h-2">
+                    <div
+                      id="p_progress"
+                      class="bg-white h-2 rounded-full transition-all duration-500"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <p class="text-white/80 text-sm mt-2">Root Development</p>
+                </div>
+              </div>
+
+              <!-- Potassium -->
+              <div
+                class="bg-linear-to-br from-blue-400 to-blue-500 rounded-2xl p-6 text-white text-center transform hover:scale-105 transition-transform duration-300 group relative overflow-hidden"
+              >
+                <div
+                  class="absolute inset-0 bg-black/10 group-hover:bg-black/20 transition-colors duration-300"
+                ></div>
+                <div class="relative z-10">
+                  <div
+                    class="w-20 h-20 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-white/30"
+                  >
+                    <img
+                      src="/img/K1.jpg"
+                      alt="Potassium"
+                      class="w-16 h-16 rounded-full object-cover border-2 border-white"
+                    />
+                  </div>
+                  <h4 class="text-lg font-bold mb-2">Potassium (K)</h4>
+                  <p class="text-3xl font-bold mb-2" id="k_value">0%</p>
+                  <div class="w-full bg-white/30 rounded-full h-2">
+                    <div
+                      id="k_progress"
+                      class="bg-white h-2 rounded-full transition-all duration-500"
+                      style="width: 0%"
+                    ></div>
+                  </div>
+                  <p class="text-white/80 text-sm mt-2">Disease Resistance</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column - Controls -->
+        <div class="space-y-8">
+          <!-- Motor Control -->
+          <div
+            class="bg-white rounded-3xl p-6 shadow-lg border border-green-100"
+          >
+            <h3 class="text-2xl font-bold text-gray-800 mb-6">
+              Irrigation Control
+            </h3>
+
+            <!-- Crop Selection -->
+            <div class="mb-4">
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Select Crop</label
+              >
+              <div id="cropDropdownContainer" class="relative">
+                <div
+                  id="cropDropdownDisplay"
+                  class="w-full p-2 bg-gray-50 border border-gray-300 rounded-xl cursor-pointer flex justify-between items-center hover:border-green-400 transition-colors"
+                >
+                  <span class="text-gray-700">Select Crop</span>
+                  <i
+                    class="fas fa-chevron-down text-gray-400 transition-transform"
+                  ></i>
+                </div>
+                <div
+                  id="cropDropdownOptions"
+                  class="absolute top-full left-0 w-full bg-white border border-gray-300 rounded-xl shadow-lg z-50 hidden max-h-60 overflow-y-auto"
+                >
+                  <!-- Options will be populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Mode Switch -->
+            <div
+              class="flex items-center justify-between mb-6 p-4 bg-gray-50 rounded-xl"
+            >
+              <div>
+                <span class="text-sm font-medium text-gray-700 block"
+                  >Operation Mode</span
+                >
+                <span class="text-xs text-gray-500" id="modeDescription"
+                  >Automatic irrigation control</span
+                >
+              </div>
+              <div class="switch btn-color-mode-switch inline-block relative">
+                <input
+                  value="1"
+                  id="color_mode"
+                  name="color_mode"
+                  type="checkbox"
+                  class="cursor-pointer w-12 h-6 opacity-0 absolute top-0 z-10 m-0"
+                />
+                <label
+                  for="color_mode"
+                  class="btn-color-mode-switch-inner block w-40 h-10 bg-green-600 rounded-full overflow-hidden relative transition-all duration-300 ease-in-out"
+                  data-off="Auto"
+                  data-on="Manual"
+                ></label>
+              </div>
+            </div>
+
+            <!-- Motor Toggle - Horizontal Layout -->
+            <div class="mb-6">
+              <div
+                class="bg-linear-to-r from-gray-100 to-gray-200 rounded-2xl p-6 transition-all duration-300"
+                id="motorCard"
+              >
+                <div class="flex items-center justify-between">
+                  <!-- Left: Motor Icon and Text -->
+                  <div class="flex items-center space-x-4">
+                    <i
+                      class="fas fa-cog text-4xl text-gray-400 transition-all duration-1000"
+                      id="motorIcon"
+                    ></i>
+                    <div>
+                      <h4 class="text-lg font-bold text-gray-800 mb-1">
+                        Motor Control
+                      </h4>
+                      <p class="text-sm text-gray-600" id="motorStatusText">
+                        Currently turned off
+                      </p>
+                    </div>
+                  </div>
+
+                  <!-- Right: Toggle Switch -->
+                  <div
+                    id="motorToggle"
+                    class="relative w-20 h-10 bg-gray-300 rounded-full cursor-pointer transition-colors duration-300 hover:scale-105"
+                  >
+                    <div
+                      class="absolute top-1 left-1 w-8 h-8 bg-white rounded-full shadow-lg transition-all duration-300"
+                    ></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- View Detailed Analytics Button -->
+            <button
+              id="moistureDetailsBtn"
+              class="w-full bg-green-600 hover:bg-green-700 text-white px-6 py-4 rounded-xl font-semibold transition-colors duration-300 flex items-center justify-center space-x-3"
+            >
+              <i class="fas fa-chart-bar text-lg"></i>
+              <span>View Detailed Analytics</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- JavaScript -->
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        set,
+        push,
+        get,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+        databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const firestore = getFirestore(app);
+
+      // Mobile Sidebar Functionality
+      const mobileMenuButton = document.getElementById("mobileMenuButton");
+      const closeSidebar = document.getElementById("closeSidebar");
+      const mobileSidebar = document.getElementById("mobileSidebar");
+      const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+      function openSidebar() {
+        mobileSidebar.classList.remove("translate-x-full");
+        document.body.style.overflow = "hidden";
+      }
+
+      function closeSidebarFunc() {
+        mobileSidebar.classList.add("translate-x-full");
+        document.body.style.overflow = "auto";
+      }
+
+      mobileMenuButton.addEventListener("click", openSidebar);
+      closeSidebar.addEventListener("click", closeSidebarFunc);
+      sidebarBackdrop.addEventListener("click", closeSidebarFunc);
+
+      // Close sidebar when clicking on navigation links
+      document.querySelectorAll("#mobileSidebar a").forEach((link) => {
+        link.addEventListener("click", closeSidebarFunc);
+      });
+
+      // Close sidebar with Escape key
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          closeSidebarFunc();
+        }
+      });
+
+      // DOM Elements
+      const moistureDetailsBtn = document.getElementById("moistureDetailsBtn");
+      const analysisDetailsBtn = document.getElementById("analysisDetailsBtn");
+      const motorToggle = document.getElementById("motorToggle");
+      const motorIcon = document.getElementById("motorIcon");
+      const toggleSwitch = document.getElementById("color_mode");
+      const cropDropdownDisplay = document.getElementById(
+        "cropDropdownDisplay"
+      );
+      const cropDropdownOptions = document.getElementById(
+        "cropDropdownOptions"
+      );
+
+      // Button event listeners
+      moistureDetailsBtn.addEventListener("click", () => {
+        window.location.href = "irrigation.html";
+      });
+
+      analysisDetailsBtn.addEventListener("click", () => {
+        window.location.href = "analysis.html";
+      });
+
+      function updateUI(elementId, value) {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.innerText = value !== null ? value : "Loading...";
+        }
+      }
+
+      function updateProgress(value) {
+        const circle = document.getElementById("progressBar");
+        const progressBar = document.getElementById("moistureProgress");
+        if (!circle || !progressBar) return;
+
+        const radius = 54;
+        const circumference = 2 * Math.PI * radius;
+        const progress = (value / 100) * circumference;
+
+        circle.style.strokeDashoffset = circumference - progress;
+        progressBar.style.width = value + "%";
+      }
+
+      // Update nutrient progress bars
+      function updateNutrientProgress(nutrient, value) {
+        const progressBar = document.getElementById(`${nutrient}_progress`);
+        if (progressBar) {
+          progressBar.style.width = value + "%";
+        }
+      }
+
+      // Update all moisture displays
+      function updateMoistureDisplay(value) {
+        updateUI("moisture_value", value + "%");
+        updateUI("moisture_value_large", value + "%");
+        updateProgress(value);
+      }
+
+      // Firebase listeners
+      const moistureRef = ref(database, "soil_moisture/wet_percentage");
+      onValue(moistureRef, (snapshot) => {
+        let moistureValue = snapshot.val() || 0;
+        updateMoistureDisplay(moistureValue);
+      });
+
+      const nRef = ref(database, "/soil/N");
+      const pRef = ref(database, "/soil/P");
+      const kRef = ref(database, "/soil/K");
+
+      onValue(nRef, (snapshot) => {
+        const value = snapshot.val() || 0;
+        updateUI("n_value", value + "%");
+        updateNutrientProgress("n", value);
+      });
+      onValue(pRef, (snapshot) => {
+        const value = snapshot.val() || 0;
+        updateUI("p_value", value + "%");
+        updateNutrientProgress("p", value);
+      });
+      onValue(kRef, (snapshot) => {
+        const value = snapshot.val() || 0;
+        updateUI("k_value", value + "%");
+        updateNutrientProgress("k", value);
+      });
+
+      // Motor control
+      const motorRef = ref(database, "motor/state");
+      onValue(motorRef, (snapshot) => {
+        const isOn = snapshot.val() === "on";
+
+        // Update motor status
+        document.getElementById("motorStatus").textContent = isOn
+          ? "ON"
+          : "OFF";
+        document.getElementById("motorStatusText").textContent = isOn
+          ? "Currently running"
+          : "Currently turned off";
+
+        // Update toggle appearance
+        motorToggle.classList.toggle("bg-green-500", isOn);
+        motorToggle.classList.toggle("bg-gray-300", !isOn);
+
+        // Update motor icon
+        const knob = motorToggle.querySelector("div");
+        const motorCard = document.getElementById("motorCard");
+        if (isOn) {
+          knob.style.transform = "translateX(40px)";
+          motorIcon.style.color = "#10B981";
+          motorIcon.style.animation = "spin 2s linear infinite";
+          motorCard.classList.replace("from-gray-100", "from-green-100");
+          motorCard.classList.replace("to-gray-200", "to-green-200");
+        } else {
+          knob.style.transform = "translateX(2px)";
+          motorIcon.style.color = "#9CA3AF";
+          motorIcon.style.animation = "none";
+          motorCard.classList.replace("from-green-100", "from-gray-100");
+          motorCard.classList.replace("to-green-200", "to-gray-200");
+        }
+      });
+
+      motorToggle.addEventListener("click", async () => {
+        try {
+          const snapshot = await get(motorRef);
+          await set(motorRef, snapshot.val() === "on" ? "off" : "on");
+        } catch (error) {
+          console.error("Error toggling motor state:", error);
+        }
+      });
+
+      // Mode switch
+      const toggleRef = ref(database, "motor/mode");
+      onValue(toggleRef, (snapshot) => {
+        const mode = snapshot.val();
+        toggleSwitch.checked = mode === "manual";
+        document.getElementById("systemMode").textContent =
+          mode === "manual" ? "Manual" : "Auto";
+        document.getElementById("modeDescription").textContent =
+          mode === "manual"
+            ? "Manual irrigation control"
+            : "Automatic irrigation control";
+      });
+
+      toggleSwitch.addEventListener("change", () => {
+        const newMode = toggleSwitch.checked ? "manual" : "auto";
+        set(toggleRef, newMode);
+      });
+
+      // Crop dropdown functionality
+      const selectedCropRef = ref(database, "selected_crop");
+      const alarmRef = ref(database, "alarms");
+
+      async function fetchCrops() {
+        try {
+          const cropsCollection = collection(firestore, "crops");
+          const cropSnapshot = await getDocs(cropsCollection);
+
+          cropDropdownOptions.innerHTML = "";
+          cropDropdownDisplay.innerHTML =
+            '<span class="text-gray-700">Select Crop</span><i class="fas fa-chevron-down text-gray-400 transition-transform"></i>';
+
+          cropSnapshot.forEach((doc) => {
+            const cropData = doc.data();
+            const cropName = doc.id;
+            const option = document.createElement("div");
+            option.className =
+              "p-4 border-b border-gray-100 hover:bg-green-50 cursor-pointer transition-colors";
+            option.innerHTML = `
+                        <div class="font-medium text-gray-800">${cropName}</div>
+                        <div class="text-sm text-gray-500">Optimal moisture: ${
+                          cropData.optimal_moisture || "--"
+                        }%</div>
+                    `;
+            option.dataset.alarms = JSON.stringify(cropData.alarms || []);
+            option.dataset.moisture = cropData.optimal_moisture || "--";
+
+            option.addEventListener("click", async () => {
+              const alarmTimes = JSON.parse(option.dataset.alarms);
+              const optimalMoisture = option.dataset.moisture;
+
+              cropDropdownDisplay.innerHTML = `<span class="text-gray-700">${cropName}</span><i class="fas fa-chevron-down text-gray-400 transition-transform"></i>`;
+              document.getElementById("activeCrop").textContent = cropName;
+              document.getElementById(
+                "optimalMoistureDisplay"
+              ).textContent = `Optimal: ${optimalMoisture}%`;
+              cropDropdownOptions.classList.add("hidden");
+
+              await set(selectedCropRef, {
+                cropName: cropName,
+                optimalMoisture: optimalMoisture,
+              });
+
+              await addCropAlarms(alarmTimes);
+            });
+
+            cropDropdownOptions.appendChild(option);
+          });
+
+          // Restore previously selected crop
+          const snapshot = await get(selectedCropRef);
+          if (snapshot.exists()) {
+            const { cropName, optimalMoisture } = snapshot.val();
+            cropDropdownDisplay.innerHTML = `<span class="text-gray-700">${cropName}</span><i class="fas fa-chevron-down text-gray-400 transition-transform"></i>`;
+            document.getElementById("activeCrop").textContent = cropName;
+            document.getElementById(
+              "optimalMoistureDisplay"
+            ).textContent = `Optimal: ${optimalMoisture}%`;
+          }
+        } catch (error) {
+          console.error("Error fetching crops:", error);
+        }
+      }
+
+      async function addCropAlarms(alarmTimes) {
+        try {
+          await set(alarmRef, {});
+          if (!alarmTimes.length) return;
+
+          for (const time of alarmTimes) {
+            const newAlarmRef = push(alarmRef);
+            await set(newAlarmRef, { time, enabled: true });
+          }
+        } catch (error) {
+          console.error("Error updating alarms:", error);
+        }
+      }
+
+      // Toggle dropdown
+      cropDropdownDisplay.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const icon = cropDropdownDisplay.querySelector("i");
+        cropDropdownOptions.classList.toggle("hidden");
+        icon.classList.toggle("rotate-180");
+      });
+
+      // Hide dropdown when clicking outside
+      document.addEventListener("click", () => {
+        cropDropdownOptions.classList.add("hidden");
+        const icon = cropDropdownDisplay.querySelector("i");
+        icon.classList.remove("rotate-180");
+      });
+
+      // Auto irrigation system
+      setInterval(async () => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const currentPeriod = currentHour >= 12 ? "PM" : "AM";
+        const formattedHour = (((currentHour + 11) % 12) + 1)
+          .toString()
+          .padStart(2, "0");
+        const formattedMinute = currentMinute.toString().padStart(2, "0");
+        const currentTime = `${formattedHour}:${formattedMinute} ${currentPeriod}`;
+
+        try {
+          const [
+            soilMoistureSnapshot,
+            motorStateSnapshot,
+            motorModeSnapshot,
+            alarmSnapshot,
+            selectedCropSnapshot,
+          ] = await Promise.all([
+            get(ref(database, "/soil_moisture/wet_percentage")),
+            get(ref(database, "/motor/state")),
+            get(ref(database, "/motor/mode")),
+            get(alarmRef),
+            get(selectedCropRef),
+          ]);
+
+          const soilMoisture = soilMoistureSnapshot.val() || 0;
+          const motorState = motorStateSnapshot.val();
+          const motorMode = motorModeSnapshot.val()?.toLowerCase() || "auto";
+          const optimalMoisture = parseInt(
+            selectedCropSnapshot.val()?.optimalMoisture || "100"
+          );
+
+          if (motorMode === "auto") {
+            let motorShouldBeOn = false;
+            let alarmIsEnabled = false;
+
+            alarmSnapshot.forEach((child) => {
+              const alarmData = child.val();
+              if (alarmData.enabled) {
+                alarmIsEnabled = true;
+                if (
+                  alarmData.time === currentTime &&
+                  soilMoisture < optimalMoisture
+                ) {
+                  motorShouldBeOn = true;
+                }
+              }
+            });
+
+            if (motorState === "off" && motorShouldBeOn) {
+              set(ref(database, "/motor/state"), "on");
+            } else if (
+              motorState === "on" &&
+              (!alarmIsEnabled || soilMoisture >= optimalMoisture)
+            ) {
+              set(ref(database, "/motor/state"), "off");
+            }
+          }
+        } catch (error) {
+          console.error("Error in auto irrigation:", error);
+        }
+      }, 10000);
+
+      // Initialize
+      fetchCrops();
+    </script>
+
+    <style>
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .btn-color-mode-switch-inner:before {
+        content: attr(data-on);
+        position: absolute;
+        font-size: 14px;
+        font-weight: 600;
+        top: 50%;
+        transform: translateY(-50%);
+        right: 20px;
+        color: white;
+      }
+
+      .btn-color-mode-switch-inner:after {
+        content: attr(data-off);
+        width: 70px;
+        height: 32px;
+        background: #fff;
+        border-radius: 20px;
+        position: absolute;
+        font-size: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        left: 4px;
+        top: 50%;
+        transform: translateY(-50%);
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        color: #222;
+        font-weight: 600;
+      }
+
+      .btn-color-mode-switch
+        input[type="checkbox"]:checked
+        + .btn-color-mode-switch-inner {
+        background-color: #10b981;
+      }
+
+      .btn-color-mode-switch
+        input[type="checkbox"]:checked
+        + .btn-color-mode-switch-inner:after {
+        content: attr(data-on);
+        left: 82px;
+        background: #fff;
+      }
+
+      .btn-color-mode-switch
+        input[type="checkbox"]:checked
+        + .btn-color-mode-switch-inner:before {
+        content: attr(data-off);
+        right: auto;
+        left: 20px;
+        color: white;
+      }
+
+      /* Custom scrollbar for dropdown */
+      #cropDropdownOptions::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      #cropDropdownOptions::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 0 0 10px 10px;
+      }
+
+      #cropDropdownOptions::-webkit-scrollbar-thumb {
+        background: #c1c1c1;
+        border-radius: 3px;
+      }
+
+      #cropDropdownOptions::-webkit-scrollbar-thumb:hover {
+        background: #a8a8a8;
+      }
+
+      /* Smooth transitions */
+      .transition-transform {
+        transition: transform 0.3s ease;
+      }
+
+      .rotate-180 {
+        transform: rotate(180deg);
+      }
+    </style>
+  </body>
+</html>

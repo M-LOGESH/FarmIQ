@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmIQ</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @keyframes spin {
+        from {
+          transform: rotate(0deg);
+        }
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .progress-ring__circle {
+        transition: stroke-dashoffset 0.5s ease;
+        transform: rotate(-90deg);
+        transform-origin: 50% 50%;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-linear-to-br from-blue-50 to-cyan-50 text-gray-800 font-sans min-h-screen overflow-x-hidden"
+  >
+    <div class="container mx-auto px-3 sm:px-4 py-4">
+      <!-- Header -->
+      <div
+        class="flex flex-col lg:flex-row justify-between items-center mb-6 gap-3"
+      >
+        <h1
+          class="text-2xl sm:text-3xl font-bold text-gray-800 text-center lg:text-left"
+        >
+          Irrigation Dashboard
+        </h1>
+        <div
+          class="flex flex-wrap justify-center gap-2 sm:gap-4 text-xs sm:text-sm font-bold"
+        >
+          <div
+            class="flex items-center gap-1 sm:gap-2 bg-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg shadow-sm border border-blue-200"
+          >
+            <i class="fas fa-tint text-blue-500 text-sm"></i>
+            <span
+              >Humidity:
+              <span id="humidity-info" class="text-blue-600">--%</span></span
+            >
+          </div>
+          <div
+            class="flex items-center gap-1 sm:gap-2 bg-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg shadow-sm border border-amber-200"
+          >
+            <i class="fas fa-sun text-amber-500 text-sm"></i>
+            <span
+              >Season:
+              <span id="season-info" class="text-amber-600"
+                >Loading...</span
+              ></span
+            >
+          </div>
+          <div
+            class="flex items-center gap-1 sm:gap-2 bg-white px-3 py-1 sm:px-4 sm:py-2 rounded-lg shadow-sm border border-green-200"
+          >
+            <i class="fas fa-map-marker-alt text-green-500 text-sm"></i>
+            <span
+              >Place:
+              <span id="location-info" class="text-green-600"
+                >Madurai</span
+              ></span
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Cards -->
+      <div
+        class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-6"
+      >
+        <!-- Soil Moisture Card -->
+        <div
+          class="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-blue-200 flex flex-col sm:flex-row items-center justify-around gap-3 sm:gap-4"
+        >
+          <div class="relative w-24 h-24 sm:w-28 sm:h-28">
+            <svg class="w-full h-full" viewBox="0 0 120 120">
+              <!-- Background circle -->
+              <circle
+                class="fill-none stroke-blue-500 stroke-[8px]"
+                cx="60"
+                cy="60"
+                r="50"
+              />
+              <!-- Progress circle - FIXED -->
+              <circle
+                id="progressBarN"
+                class="fill-none stroke-blue-200 stroke-[8px] stroke-linecap-round progress-ring__circle"
+                cx="60"
+                cy="60"
+                r="50"
+                stroke-dasharray="314.159"
+                stroke-dashoffset="314.159"
+              />
+            </svg>
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-xl sm:text-2xl text-blue-500"
+            >
+              <i class="fas fa-tint"></i>
+            </div>
+          </div>
+          <div class="text-center sm:text-left">
+            <p class="text-lg sm:text-xl font-bold mb-1 sm:mb-2 text-gray-700">
+              Soil Moisture
+            </p>
+            <div
+              class="text-2xl sm:text-3xl font-bold text-blue-600"
+              id="valueN"
+            >
+              0%
+            </div>
+          </div>
+        </div>
+
+        <!-- Motor Control Card -->
+        <div
+          class="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-green-200 flex flex-col sm:flex-row items-center justify-around gap-3 sm:gap-4"
+          id="motorContainer"
+        >
+          <i
+            class="fas fa-cog text-4xl sm:text-6xl text-gray-400 transition-transform duration-1000"
+            id="motorIcon"
+          ></i>
+          <div class="text-center sm:text-left">
+            <p class="text-lg sm:text-xl font-bold mb-1 sm:mb-2 text-gray-700">
+              Motor State
+            </p>
+          </div>
+          <div
+            id="motorToggle"
+            class="relative w-14 h-7 sm:w-16 sm:h-8 bg-gray-300 rounded-full cursor-pointer transition-colors duration-300"
+          >
+            <div
+              class="absolute top-1 left-1 w-5 h-5 sm:w-6 sm:h-6 bg-green-500 rounded-full transition-all duration-300 shadow-sm"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Time Card -->
+        <div
+          class="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-purple-200 flex flex-col sm:flex-row items-center justify-around gap-3 sm:gap-4"
+        >
+          <i class="fas fa-clock text-4xl sm:text-6xl text-purple-400"></i>
+          <div class="text-center sm:text-left">
+            <div
+              class="text-xl sm:text-2xl font-bold text-purple-600"
+              id="time-info"
+            >
+              Loading...
+            </div>
+            <div class="text-sm sm:text-lg text-gray-600" id="date-info">
+              Loading...
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Section -->
+      <div
+        class="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-blue-200 mb-6"
+      >
+        <div class="flex flex-col lg:flex-row gap-4 sm:gap-6">
+          <!-- Current Weather -->
+          <div
+            class="bg-linear-to-r from-blue-50 to-cyan-50 rounded-xl p-4 sm:p-6 border border-blue-200"
+          >
+            <div
+              class="flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4"
+            >
+              <i
+                id="weather-icon"
+                class="fas fa-cloud text-4xl sm:text-5xl text-blue-500 mb-2 sm:mb-0"
+              ></i>
+              <div class="text-center flex-1">
+                <div
+                  class="text-2xl sm:text-3xl font-bold text-blue-700"
+                  id="temperature-info"
+                >
+                  Loading...
+                </div>
+                <div
+                  class="text-sm sm:text-lg text-gray-600"
+                  id="weather-condition"
+                >
+                  Fetching...
+                </div>
+              </div>
+              <div class="text-center sm:text-right">
+                <div
+                  class="text-lg sm:text-xl font-bold text-gray-800"
+                  id="current-date"
+                >
+                  --
+                </div>
+                <div class="text-sm text-gray-600" id="rain-status">
+                  Checking...
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Forecast -->
+          <div class="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+            <!-- Day 1 -->
+            <div
+              class="bg-linear-to-r from-green-50 to-emerald-50 rounded-xl p-3 sm:p-4 border border-green-200"
+            >
+              <div class="flex py-4 items-center gap-2 sm:gap-3">
+                <i
+                  id="day1-icon"
+                  class="fas fa-cloud text-2xl sm:text-3xl text-green-500"
+                ></i>
+                <div class="flex-1 text-center">
+                  <div
+                    class="text-lg sm:text-xl font-bold text-green-700"
+                    id="day1-temp"
+                  >
+                    --°C
+                  </div>
+                  <div class="text-xs sm:text-sm text-gray-600" id="day1-rain">
+                    Checking...
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div
+                    class="text-sm sm:text-base font-bold text-gray-800"
+                    id="day1-date"
+                  >
+                    --
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Day 2 -->
+            <div
+              class="bg-linear-to-r from-amber-50 to-orange-50 rounded-xl p-3 sm:p-4 border border-amber-200"
+            >
+              <div class="flex py-4 items-center gap-2 sm:gap-3">
+                <i
+                  id="day2-icon"
+                  class="fas fa-cloud text-2xl sm:text-3xl text-amber-500"
+                ></i>
+                <div class="flex-1 text-center">
+                  <div
+                    class="text-lg sm:text-xl font-bold text-amber-700"
+                    id="day2-temp"
+                  >
+                    --°C
+                  </div>
+                  <div class="text-xs sm:text-sm text-gray-600" id="day2-rain">
+                    Checking...
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div
+                    class="text-sm sm:text-base font-bold text-gray-800"
+                    id="day2-date"
+                  >
+                    --
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Day 3 -->
+            <div
+              class="bg-linear-to-r from-purple-50 to-violet-50 rounded-xl p-3 sm:p-4 border border-purple-200"
+            >
+              <div class="flex py-4 items-center gap-2 sm:gap-3">
+                <i
+                  id="day3-icon"
+                  class="fas fa-cloud text-2xl sm:text-3xl text-purple-500"
+                ></i>
+                <div class="flex-1 text-center">
+                  <div
+                    class="text-lg sm:text-xl font-bold text-purple-700"
+                    id="day3-temp"
+                  >
+                    --°C
+                  </div>
+                  <div class="text-xs sm:text-sm text-gray-600" id="day3-rain">
+                    Checking...
+                  </div>
+                </div>
+                <div class="text-right">
+                  <div
+                    class="text-sm sm:text-base font-bold text-gray-800"
+                    id="day3-date"
+                  >
+                    --
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Irrigation Section -->
+      <div
+        class="bg-white rounded-xl p-4 sm:p-6 shadow-lg border border-green-200"
+      >
+        <div
+          class="flex flex-col lg:flex-row justify-between items-center mb-4 sm:mb-6 gap-3 sm:gap-4"
+        >
+          <h2
+            class="text-xl sm:text-2xl font-bold text-gray-800 text-center lg:text-left"
+          >
+            Irrigation Schedule
+          </h2>
+          <div
+            class="bg-blue-50 px-3 sm:px-4 py-1 sm:py-2 rounded-lg text-xs sm:text-sm border border-blue-200"
+          >
+            <span id="selectedCrop" class="text-blue-700 font-semibold"
+              >Crop: None</span
+            >
+            |
+            <span id="optimalMoisture" class="text-blue-700 font-semibold"
+              >Optimal Moisture: --%</span
+            >
+          </div>
+          <div
+            class="flex flex-col sm:flex-row items-center gap-2 sm:gap-3 w-full sm:w-auto"
+          >
+            <a href="customize.html" class="w-full sm:w-auto">
+              <button
+                class="w-full bg-green-500 hover:bg-green-600 text-white px-4 py-2 text-sm sm:text-base font-semibold rounded-lg transition-colors duration-300 shadow-sm flex items-center justify-center gap-2"
+              >
+                <i class="fas fa-cog"></i>
+                Customize
+              </button>
+            </a>
+            <div id="cropDropdownContainer" class="relative w-full sm:w-48">
+              <div
+                id="cropDropdownDisplay"
+                class="bg-white border-2 border-green-500 rounded-lg p-2 cursor-pointer flex justify-between items-center text-sm"
+              >
+                <span class="truncate">Select Crop</span>
+                <i class="fas fa-chevron-down text-green-500 text-xs"></i>
+              </div>
+              <div
+                id="cropDropdownOptions"
+                class="absolute top-full left-0 w-full bg-white border border-green-300 rounded-lg shadow-lg hidden z-50 max-h-48 overflow-y-auto text-sm"
+              ></div>
+            </div>
+            <button
+              id="addAlarmBtn"
+              class="bg-green-500 hover:bg-green-600 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center transition-colors duration-300 text-lg sm:text-xl font-bold shadow-sm"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- Alarm Container -->
+        <div
+          id="alarmContainer"
+          class="space-y-3 max-h-60 overflow-y-auto pr-1 sm:pr-2"
+        >
+          <!-- Alarms will be populated here -->
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+        set,
+        push,
+        remove,
+        get,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+        databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const firestore = getFirestore(app);
+
+      let smValues = { N: 0 };
+      let season = "";
+
+      function updateProgressBar(element, value) {
+        const circumference = 314;
+        const progress = (value / 100) * circumference;
+        element.style.strokeDasharray = `${progress} ${circumference}`;
+      }
+
+      function updateValue(elementId, value) {
+        document.getElementById(elementId).textContent = `${value}%`;
+      }
+
+      onValue(ref(database, "/soil_moisture/wet_percentage"), (snapshot) => {
+        smValues.N = snapshot.val() || 0;
+        updateValue("valueN", smValues.N);
+        updateProgressBar(document.getElementById("progressBarN"), smValues.N);
+      });
+
+      function updateUI(elementId, value) {
+        document.getElementById(elementId).innerText = value;
+      }
+
+      const motorRef = ref(database, "motor/state");
+      const alarmRef = ref(database, "alarms");
+      const selectedCropRef = ref(database, "selected_crop");
+      const motorToggle = document.getElementById("motorToggle");
+      const motorContainer = document.getElementById("motorContainer");
+      const motorIcon = document.getElementById("motorIcon");
+
+      onValue(motorRef, (snapshot) => {
+        const isOn = snapshot.val() === "on";
+
+        // Update toggle appearance
+        motorToggle.classList.toggle("bg-green-500", isOn);
+        motorToggle.classList.toggle("bg-gray-300", !isOn);
+
+        // Update knob position
+        const knob = motorToggle.querySelector("div");
+        if (isOn) {
+          knob.style.transform = "translateX(28px)";
+          knob.style.backgroundColor = "#ffffff";
+          motorIcon.style.color = "#10B981";
+          motorIcon.style.animation = "spin 2s linear infinite";
+        } else {
+          knob.style.transform = "translateX(4px)";
+          knob.style.backgroundColor = "#10B981";
+          motorIcon.style.color = "#9CA3AF";
+          motorIcon.style.animation = "none";
+        }
+      });
+
+      motorToggle.addEventListener("click", async () => {
+        try {
+          const snapshot = await get(motorRef);
+          await set(motorRef, snapshot.val() === "on" ? "off" : "on");
+        } catch (error) {
+          console.error("Error toggling motor state:", error);
+        }
+      });
+
+      document.getElementById("addAlarmBtn").addEventListener("click", () => {
+        const newAlarmRef = push(alarmRef);
+        set(newAlarmRef, { time: "12:00 AM", enabled: false });
+      });
+
+      onValue(alarmRef, (snapshot) => {
+        document.getElementById("alarmContainer").innerHTML = "";
+        snapshot.forEach((child) => {
+          const alarmData = child.val();
+          addAlarmToDOM(child.key, alarmData.time, alarmData.enabled);
+        });
+      });
+
+      const cropDropdownDisplay = document.getElementById(
+        "cropDropdownDisplay"
+      );
+      const cropDropdownOptions = document.getElementById(
+        "cropDropdownOptions"
+      );
+      const selectedCropDisplay = document.getElementById("selectedCrop");
+      const optimalMoistureDisplay = document.getElementById("optimalMoisture");
+
+      async function fetchCrops() {
+        try {
+          const cropsCollection = collection(firestore, "crops");
+          const cropSnapshot = await getDocs(cropsCollection);
+
+          cropDropdownOptions.innerHTML = "";
+          cropDropdownDisplay.innerHTML =
+            '<span class="truncate">Select Crop</span><i class="fas fa-chevron-down text-green-500 text-xs"></i>';
+
+          cropSnapshot.forEach((doc) => {
+            const cropData = doc.data();
+            const cropname = doc.id;
+
+            const option = document.createElement("div");
+            option.className =
+              "p-3 border-b border-green-100 hover:bg-green-50 hover:text-green-700 cursor-pointer transition-colors text-sm";
+            option.textContent = cropname;
+            option.dataset.moisture = cropData.optimal_moisture || "--";
+            option.dataset.alarms = JSON.stringify(cropData.alarms || []);
+
+            option.addEventListener("click", async () => {
+              const cropName = option.textContent;
+              const optimalMoisture = option.dataset.moisture;
+              const alarmTimes = JSON.parse(option.dataset.alarms);
+
+              cropDropdownDisplay.innerHTML = `<span class="truncate">${cropName}</span><i class="fas fa-chevron-down text-green-500 text-xs"></i>`;
+              selectedCropDisplay.textContent = `Crop: ${cropName}`;
+              optimalMoistureDisplay.textContent = `Optimal Moisture: ${optimalMoisture}%`;
+
+              await set(selectedCropRef, {
+                cropName: cropName,
+                optimalMoisture: optimalMoisture,
+              });
+
+              cropDropdownOptions.classList.add("hidden");
+              await addCropAlarms(alarmTimes);
+            });
+
+            cropDropdownOptions.appendChild(option);
+          });
+        } catch (error) {
+          console.error("Error fetching crops:", error);
+        }
+      }
+
+      onValue(selectedCropRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          selectedCropDisplay.textContent = `Crop: ${data.cropName}`;
+          optimalMoistureDisplay.textContent = `Optimal Moisture: ${data.optimalMoisture}%`;
+          cropDropdownDisplay.innerHTML = `<span class="truncate">${data.cropName}</span><i class="fas fa-chevron-down text-green-500 text-xs"></i>`;
+        }
+      });
+
+      async function addCropAlarms(alarmTimes) {
+        try {
+          await set(alarmRef, {});
+          if (!alarmTimes.length) return;
+
+          for (const time of alarmTimes) {
+            const newAlarmRef = push(alarmRef);
+            await set(newAlarmRef, { time, enabled: true });
+          }
+        } catch (error) {
+          console.error("Error updating alarms:", error);
+        }
+      }
+
+      cropDropdownDisplay.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const icon = cropDropdownDisplay.querySelector("i");
+        cropDropdownOptions.classList.toggle("hidden");
+        icon.classList.toggle("rotate-180");
+      });
+
+      document.addEventListener("click", () => {
+        cropDropdownOptions.classList.add("hidden");
+        const icon = cropDropdownDisplay.querySelector("i");
+        icon.classList.remove("rotate-180");
+      });
+
+      fetchCrops();
+
+      setInterval(async () => {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const currentMinute = now.getMinutes();
+        const currentPeriod = currentHour >= 12 ? "PM" : "AM";
+        const formattedHour = (((currentHour + 11) % 12) + 1)
+          .toString()
+          .padStart(2, "0");
+        const formattedMinute = currentMinute.toString().padStart(2, "0");
+        const currentTime = `${formattedHour}:${formattedMinute} ${currentPeriod}`;
+
+        try {
+          const [
+            soilMoistureSnapshot,
+            motorStateSnapshot,
+            motorModeSnapshot,
+            alarmSnapshot,
+            selectedCropSnapshot,
+          ] = await Promise.all([
+            get(ref(database, "/soil_moisture/wet_percentage")),
+            get(ref(database, "/motor/state")),
+            get(ref(database, "/motor/mode")),
+            get(alarmRef),
+            get(selectedCropRef),
+          ]);
+
+          const soilMoisture = soilMoistureSnapshot.val() || 0;
+          const motorState = motorStateSnapshot.val();
+          const motorMode = motorModeSnapshot.val()?.toLowerCase() || "auto";
+          const optimalMoisture = parseInt(
+            selectedCropSnapshot.val()?.optimalMoisture || "100"
+          );
+
+          if (motorMode === "auto") {
+            let motorShouldBeOn = false;
+            let alarmIsEnabled = false;
+
+            alarmSnapshot.forEach((child) => {
+              const alarmData = child.val();
+              if (alarmData.enabled) {
+                alarmIsEnabled = true;
+                if (
+                  alarmData.time === currentTime &&
+                  soilMoisture < optimalMoisture
+                ) {
+                  motorShouldBeOn = true;
+                }
+              }
+            });
+
+            if (motorState === "off" && motorShouldBeOn) {
+              set(ref(database, "/motor/state"), "on");
+            } else if (
+              motorState === "on" &&
+              (!alarmIsEnabled || soilMoisture >= optimalMoisture)
+            ) {
+              set(ref(database, "/motor/state"), "off");
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      }, 10000);
+
+      function addAlarmToDOM(alarmId, time, enabled) {
+        const alarmCard = document.createElement("div");
+        alarmCard.className =
+          "flex flex-row items-center justify-between bg-blue-50 p-3 rounded-lg border border-blue-200 gap-2 sm:gap-3";
+
+        const [timePart, period] = time.split(" ");
+        const [setHour, setMinute] = timePart.split(":");
+
+        const timeContainer = document.createElement("div");
+        timeContainer.className = "flex items-center gap-2 flex-1 text-sm";
+
+        const timeLabel = document.createElement("span");
+        timeLabel.textContent = "Time:";
+        timeLabel.className = "font-semibold text-gray-700";
+        timeContainer.appendChild(timeLabel);
+
+        const hourInput = createDropdown(setHour, 1, 12, "hour");
+        const minuteInput = createDropdown(setMinute, 0, 59, "minute");
+        const ampmInput = createDropdown(period, ["AM", "PM"], null, "ampm");
+
+        timeContainer.appendChild(hourInput.container);
+        timeContainer.appendChild(document.createTextNode(":"));
+        timeContainer.appendChild(minuteInput.container);
+        timeContainer.appendChild(ampmInput.container);
+
+        const alarmToggleBtn = document.createElement("div");
+        alarmToggleBtn.className = `relative w-12 h-6 rounded-full cursor-pointer transition-colors duration-300 ${
+          enabled ? "bg-green-500" : "bg-gray-300"
+        }`;
+
+        alarmToggleBtn.addEventListener("click", async () => {
+          const alarmSnapshot = await get(
+            ref(database, `alarms/${alarmId}/enabled`)
+          );
+          const newEnabledState = !alarmSnapshot.val();
+          set(ref(database, `alarms/${alarmId}/enabled`), newEnabledState);
+        });
+
+        const alarmToggleKnob = document.createElement("div");
+        alarmToggleKnob.className = `absolute top-1 w-4 h-4 rounded-full bg-white transition-all duration-300 shadow-sm ${
+          enabled ? "left-7" : "left-1"
+        }`;
+        alarmToggleBtn.appendChild(alarmToggleKnob);
+
+        const removeBtn = document.createElement("button");
+        removeBtn.className =
+          "text-red-500 hover:text-red-700 transition-colors p-1 text-lg";
+        removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+        removeBtn.addEventListener("click", () => {
+          remove(ref(database, `alarms/${alarmId}`));
+        });
+
+        alarmCard.appendChild(timeContainer);
+        alarmCard.appendChild(alarmToggleBtn);
+        alarmCard.appendChild(removeBtn);
+
+        document.getElementById("alarmContainer").appendChild(alarmCard);
+
+        function createDropdown(defaultValue, min, max, type) {
+          const container = document.createElement("div");
+          container.className = "relative";
+
+          const input = document.createElement("div");
+          input.className =
+            "w-8 sm:w-10 p-1 text-center bg-white text-gray-800 border border-blue-300 rounded cursor-pointer text-xs sm:text-sm";
+          input.textContent = defaultValue;
+          container.appendChild(input);
+
+          const dropdown = document.createElement("div");
+          dropdown.className =
+            "absolute top-8 left-0 bg-white border border-blue-200 rounded shadow-lg max-h-32 overflow-y-auto hidden z-50 w-full text-xs sm:text-sm";
+          container.appendChild(dropdown);
+
+          if (Array.isArray(min)) {
+            min.forEach((value) => {
+              let option = document.createElement("div");
+              option.className =
+                "p-2 text-center hover:bg-blue-50 cursor-pointer";
+              option.textContent = value;
+              dropdown.appendChild(option);
+              option.addEventListener("click", () => {
+                input.textContent = value;
+                dropdown.style.display = "none";
+                updateAlarmTime();
+              });
+            });
+          } else {
+            for (let i = min; i <= max; i++) {
+              let value = i.toString().padStart(2, "0");
+              let option = document.createElement("div");
+              option.className =
+                "p-2 text-center hover:bg-blue-50 cursor-pointer";
+              option.textContent = value;
+              dropdown.appendChild(option);
+              option.addEventListener("click", () => {
+                input.textContent = value;
+                dropdown.style.display = "none";
+                updateAlarmTime();
+              });
+            }
+          }
+
+          input.addEventListener("click", () => {
+            dropdown.style.display =
+              dropdown.style.display === "block" ? "none" : "block";
+          });
+
+          document.addEventListener("click", (event) => {
+            if (!container.contains(event.target)) {
+              dropdown.style.display = "none";
+            }
+          });
+
+          return { container, input };
+        }
+
+        function updateAlarmTime() {
+          const newTime = `${hourInput.input.textContent}:${minuteInput.input.textContent} ${ampmInput.input.textContent}`;
+          set(ref(database, `alarms/${alarmId}/time`), newTime);
+        }
+      }
+
+      function updateISTTime() {
+        const now = new Date();
+        const istTime = new Date(
+          now.toLocaleString("en-US", { timeZone: "Asia/Kolkata" })
+        );
+
+        let hours = istTime.getHours();
+        const minutes = String(istTime.getMinutes()).padStart(2, "0");
+        const seconds = String(istTime.getSeconds()).padStart(2, "0");
+        const ampm = hours >= 12 ? "PM" : "AM";
+
+        hours = hours % 12 || 12;
+
+        const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+        document.getElementById("time-info").innerText = timeString;
+
+        const options = { weekday: "long", month: "long", day: "numeric" };
+        const dateString = istTime.toLocaleDateString("en-US", options);
+
+        document.getElementById("date-info").innerText = dateString;
+      }
+
+      setInterval(updateISTTime, 1000);
+      updateISTTime();
+
+      const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+      const city = "Madurai";
+
+      function getSeason(month) {
+        if (month === 12 || month <= 2) return "Winter";
+        if (month >= 3 && month <= 5) return "Summer";
+        if (month >= 6 && month <= 9) return "Southwest Monsoon";
+        return "Northeast Monsoon";
+      }
+
+      function getWeatherIcon(condition) {
+        condition = condition.toLowerCase();
+        if (condition.includes("cloud"))
+          return "fas fa-cloud text-2xl sm:text-5xl text-blue-500";
+        if (condition.includes("rain") || condition.includes("drizzle"))
+          return "fas fa-cloud-showers-heavy text-2xl sm:text-5xl text-blue-400";
+        if (condition.includes("clear"))
+          return "fas fa-sun text-2xl sm:text-5xl text-amber-500";
+        if (condition.includes("storm") || condition.includes("thunderstorm"))
+          return "fas fa-bolt text-2xl sm:text-5xl text-amber-400";
+        if (condition.includes("snow"))
+          return "fas fa-snowflake text-2xl sm:text-5xl text-blue-300";
+        return "fas fa-smog text-2xl sm:text-5xl text-gray-400";
+      }
+
+      function checkRainCondition(condition) {
+        condition = condition.toLowerCase();
+        return condition.includes("rain") ||
+          condition.includes("storm") ||
+          condition.includes("drizzle") ||
+          condition.includes("shower")
+          ? "Rain Expected"
+          : "No Rain";
+      }
+
+      async function fetchWeatherData() {
+        const currentWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city},IN&appid=${apiKey}&units=metric`;
+        const forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?q=${city},IN&appid=${apiKey}&units=metric`;
+
+        try {
+          const currentResponse = await fetch(currentWeatherUrl);
+          const currentData = await currentResponse.json();
+          if (currentData.cod === 200) {
+            document.getElementById(
+              "temperature-info"
+            ).innerHTML = `${Math.round(currentData.main.temp)}°C`;
+            document.getElementById("current-date").innerHTML =
+              new Date().toLocaleDateString("en-US", {
+                month: "short",
+                day: "numeric",
+              });
+            document.getElementById("weather-condition").innerHTML =
+              currentData.weather[0].description;
+            document.getElementById("weather-icon").className = getWeatherIcon(
+              currentData.weather[0].description
+            );
+            document.getElementById("rain-status").innerHTML =
+              checkRainCondition(currentData.weather[0].description);
+            document.getElementById(
+              "humidity-info"
+            ).textContent = `${currentData.main.humidity}%`;
+            document.getElementById("season-info").textContent = getSeason(
+              new Date().getMonth() + 1
+            );
+          }
+
+          const forecastResponse = await fetch(forecastUrl);
+          const forecastData = await forecastResponse.json();
+          if (forecastData.cod === "200") {
+            const dailyData = forecastData.list.filter((item) =>
+              item.dt_txt.includes("12:00:00")
+            );
+
+            for (let i = 0; i < 3; i++) {
+              if (dailyData[i]) {
+                const date = new Date(dailyData[i].dt * 1000);
+                document.getElementById(
+                  `day${i + 1}-temp`
+                ).innerHTML = `${Math.round(dailyData[i].main.temp)}°C`;
+                document.getElementById(`day${i + 1}-date`).innerHTML =
+                  date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  });
+                document.getElementById(`day${i + 1}-icon`).className =
+                  getWeatherIcon(dailyData[i].weather[0].description);
+                document.getElementById(`day${i + 1}-rain`).innerHTML =
+                  checkRainCondition(dailyData[i].weather[0].description);
+              }
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching weather data:", error);
+        }
+      }
+
+      window.onload = fetchWeatherData;
+    </script>
+  </body>
+</html>

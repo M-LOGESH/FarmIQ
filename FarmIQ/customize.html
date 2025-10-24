@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, minimum-scale=1.0"
+    />
+    <title>FarmIQ</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      @media (max-width: 640px) {
+        html {
+          font-size: 16px;
+        }
+        body {
+          zoom: 1;
+        }
+      }
+
+      /* Custom styles for dropdown visibility */
+      .dropdown-container {
+        position: relative;
+        z-index: 10;
+      }
+
+      .dropdown-options {
+        z-index: 1000 !important;
+        position: absolute !important;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-linear-to-br from-blue-50 to-cyan-50 text-gray-800 font-sans min-h-screen p-3 sm:p-4"
+  >
+    <div class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <div class="text-center mb-6 sm:mb-8">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-800 mb-2">
+          Customize Crop Irrigation
+        </h1>
+        <p class="text-gray-600 text-sm sm:text-base">
+          Manage crop settings and irrigation schedules
+        </p>
+      </div>
+
+      <!-- Main Content Grid -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8">
+        <!-- Left Column - Crop Form -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-blue-200 max-h-[500px]"
+        >
+          <h2 class="text-lg sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">
+            Add New Crop
+          </h2>
+
+          <!-- Crop Details -->
+          <div class="space-y-4 mb-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Crop Name</label
+              >
+              <input
+                type="text"
+                id="cropName"
+                placeholder="Enter crop name"
+                class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 text-base"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-2"
+                >Optimal Moisture (%)</label
+              >
+              <input
+                type="number"
+                id="optimalMoisture"
+                placeholder="Enter optimal moisture percentage"
+                class="w-full px-4 py-3 bg-white border border-gray-300 rounded-lg text-gray-800 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 text-base"
+              />
+            </div>
+          </div>
+
+          <!-- Irrigation Times -->
+          <div class="mb-6">
+            <div class="flex justify-between items-center mb-4">
+              <label class="block text-sm font-medium text-gray-700"
+                >Irrigation Times</label
+              >
+              <button
+                onclick="addAlarmInput()"
+                class="flex items-center gap-2 px-4 py-2 bg-green-500 text-white rounded-lg cursor-pointer hover:bg-green-600 transition-colors duration-200 font-medium text-sm sm:text-base"
+              >
+                <i class="fas fa-plus"></i>
+                Add Time
+              </button>
+            </div>
+
+            <!-- Removed overflow restriction to allow dropdowns to show properly -->
+            <div id="alarmContainer" class="space-y-3 max-h-60 pr-2">
+              <!-- Alarm items will be added here -->
+            </div>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              onclick="saveCrop()"
+              class="flex-1 flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600 transition-colors duration-200 font-semibold text-sm sm:text-base"
+            >
+              <i class="fas fa-save"></i>
+              Save Crop
+            </button>
+
+            <button
+              onclick="clearForm()"
+              class="flex-1 flex items-center justify-center gap-2 px-4 sm:px-6 py-2 sm:py-3 bg-gray-500 text-white rounded-lg cursor-pointer hover:bg-gray-600 transition-colors duration-200 font-semibold text-sm sm:text-base"
+            >
+              <i class="fas fa-times"></i>
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <!-- Right Column - Saved Crops -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-blue-200"
+        >
+          <h2 class="text-xl sm:text-2xl font-bold mb-4 sm:mb-6 text-gray-800">
+            Saved Crops
+          </h2>
+
+          <div
+            id="savedCropsContainer"
+            class="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[500px] sm:max-h-[600px] overflow-y-auto pr-2"
+          >
+            <!-- Saved crops will be populated here -->
+          </div>
+
+          <div id="emptyState" class="text-center py-8 text-gray-500 hidden">
+            <i class="fas fa-seedling text-4xl mb-4 text-gray-300"></i>
+            <p class="text-sm sm:text-base">
+              No crops saved yet. Add your first crop to get started!
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+      import {
+        getFirestore,
+        doc,
+        setDoc,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+      import { deleteDoc } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+        databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+      };
+      const app = initializeApp(firebaseConfig);
+      const firestore = getFirestore(app);
+
+      window.addAlarmInput = function () {
+        const container = document.getElementById("alarmContainer");
+        const alarmItem = document.createElement("div");
+        alarmItem.className =
+          "flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200";
+
+        const hourSelect = createDropdown(1, 12, false);
+        const minuteSelect = createDropdown(0, 59, true);
+        const amPmSelect = createDropdown(["AM", "PM"], false);
+
+        alarmItem.appendChild(hourSelect);
+        alarmItem.appendChild(document.createTextNode(":"));
+        alarmItem.appendChild(minuteSelect);
+        alarmItem.appendChild(amPmSelect);
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+        deleteBtn.className =
+          "flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-lg cursor-pointer hover:bg-red-600 transition-colors duration-200 ";
+        deleteBtn.title = "Remove this alarm";
+        deleteBtn.onclick = () => alarmItem.remove();
+
+        alarmItem.appendChild(deleteBtn);
+        container.appendChild(alarmItem);
+      };
+
+      function createDropdown(start, end, isMinute = true) {
+        const dropdownContainer = document.createElement("div");
+        dropdownContainer.className = "dropdown-container";
+
+        const selectedOption = document.createElement("div");
+        selectedOption.className =
+          "flex items-center justify-between w-16 px-3 py-2 bg-white border border-gray-300 rounded-lg cursor-pointer text-gray-800 hover:border-blue-500 transition-colors duration-200 text-sm";
+        selectedOption.innerHTML = `
+        <span>${Array.isArray(start) ? start[0] : isMinute ? "00" : "1"}</span>
+        <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+      `;
+
+        dropdownContainer.appendChild(selectedOption);
+
+        const optionsContainer = document.createElement("div");
+        optionsContainer.className =
+          "absolute top-full left-0 w-full bg-white border border-gray-300 rounded-lg shadow-lg z-[1000] max-h-36 overflow-y-auto hidden";
+
+        if (Array.isArray(start)) {
+          start.forEach((opt) => {
+            const option = document.createElement("div");
+            option.className =
+              "px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors duration-200 text-sm";
+            option.textContent = opt;
+            optionsContainer.appendChild(option);
+          });
+        } else {
+          for (let i = start; i <= end; i++) {
+            const option = document.createElement("div");
+            option.className =
+              "px-3 py-2 hover:bg-blue-50 cursor-pointer transition-colors duration-200 text-sm";
+            option.textContent = i.toString().padStart(2, "0");
+            optionsContainer.appendChild(option);
+          }
+        }
+
+        dropdownContainer.appendChild(optionsContainer);
+
+        selectedOption.addEventListener("click", (e) => {
+          e.stopPropagation();
+          optionsContainer.classList.toggle("hidden");
+
+          // Close other dropdowns when opening a new one
+          document
+            .querySelectorAll(".dropdown-container .absolute")
+            .forEach((dropdown) => {
+              if (
+                dropdown !== optionsContainer &&
+                !dropdown.classList.contains("hidden")
+              ) {
+                dropdown.classList.add("hidden");
+              }
+            });
+        });
+
+        optionsContainer.querySelectorAll("div").forEach((option) => {
+          option.addEventListener("click", () => {
+            selectedOption.innerHTML = `
+            <span>${option.textContent}</span>
+            <i class="fas fa-chevron-down text-xs text-gray-500"></i>
+          `;
+            optionsContainer.classList.add("hidden");
+          });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+          if (!dropdownContainer.contains(e.target)) {
+            optionsContainer.classList.add("hidden");
+          }
+        });
+
+        return dropdownContainer;
+      }
+
+      window.saveCrop = async function () {
+        const cropName = document.getElementById("cropName").value.trim();
+        const optimalMoisture = parseInt(
+          document.getElementById("optimalMoisture").value
+        );
+
+        if (!cropName || isNaN(optimalMoisture)) {
+          alert(
+            "Please enter crop name and valid optimal moisture percentage."
+          );
+          return;
+        }
+
+        const alarmItems = document.querySelectorAll("#alarmContainer > div");
+        const alarms = [];
+
+        alarmItems.forEach((item) => {
+          const selects = item.querySelectorAll(
+            ".dropdown-container .flex.items-center.justify-between span"
+          );
+          const hour = selects[0].textContent;
+          const minute = selects[1].textContent;
+          const ampm = selects[2].textContent;
+          alarms.push(`${hour}:${minute} ${ampm}`);
+        });
+
+        if (alarms.length === 0) {
+          alert("Please add at least one irrigation time.");
+          return;
+        }
+
+        try {
+          await setDoc(doc(firestore, "crops", cropName), {
+            alarms,
+            optimal_moisture: optimalMoisture,
+          });
+
+          showNotification("Crop saved successfully!", "success");
+          loadSavedCrops();
+          clearForm();
+        } catch (error) {
+          console.error("Error saving to Firestore:", error);
+          showNotification("Failed to save crop data.", "error");
+        }
+      };
+
+      window.clearForm = function () {
+        document.getElementById("cropName").value = "";
+        document.getElementById("optimalMoisture").value = "";
+        document.getElementById("alarmContainer").innerHTML = "";
+      };
+
+      async function loadSavedCrops() {
+        const container = document.getElementById("savedCropsContainer");
+        const emptyState = document.getElementById("emptyState");
+
+        try {
+          const cropsSnapshot = await getDocs(collection(firestore, "crops"));
+
+          if (cropsSnapshot.empty) {
+            container.innerHTML = "";
+            emptyState.classList.remove("hidden");
+            return;
+          }
+
+          emptyState.classList.add("hidden");
+          container.innerHTML = "";
+
+          cropsSnapshot.forEach((doc) => {
+            const cropName = doc.id;
+            const data = doc.data();
+            const alarms = data.alarms || [];
+            const optimal = data.optimal_moisture || "";
+
+            // Create crop card with flex column and full height
+            const cropCard = document.createElement("div");
+            cropCard.className =
+              "bg-gradient-to-br from-green-50 to-emerald-50 rounded-lg p-4 border border-green-200 hover:shadow-md transition-shadow duration-200 flex flex-col h-full";
+
+            // Crop header with delete button
+            const cropHeader = document.createElement("div");
+            cropHeader.className = "flex justify-between items-start mb-3";
+
+            const cropTitle = document.createElement("h3");
+            cropTitle.className =
+              "text-base sm:text-lg font-semibold text-gray-800 truncate";
+            cropTitle.textContent = cropName;
+            cropHeader.appendChild(cropTitle);
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+            deleteBtn.className =
+              "flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-lg cursor-pointer hover:bg-red-600 transition-colors duration-200 flex-shrink-0";
+            deleteBtn.title = "Delete crop";
+            deleteBtn.onclick = () => deleteCrop(cropName);
+            cropHeader.appendChild(deleteBtn);
+
+            cropCard.appendChild(cropHeader);
+
+            // Moisture info
+            const moisture = document.createElement("div");
+            moisture.className =
+              "flex items-center gap-2 mb-3 text-sm text-gray-600";
+            moisture.innerHTML = `
+        <i class="fas fa-tint text-blue-500"></i>
+        <span>Optimal Moisture: <strong class="text-blue-600">${optimal}%</strong></span>
+      `;
+            cropCard.appendChild(moisture);
+
+            // Content wrapper that will grow to fill available space
+            const contentWrapper = document.createElement("div");
+            contentWrapper.className = "flex-1";
+
+            // Irrigation times
+            if (alarms.length > 0) {
+              const alarmList = document.createElement("div");
+              alarmList.className = "mb-4";
+
+              const alarmTitle = document.createElement("div");
+              alarmTitle.className =
+                "flex items-center gap-2 text-sm font-medium text-gray-700 mb-2";
+              alarmTitle.innerHTML = `
+          <i class="fas fa-clock text-green-500"></i>
+          <span>Irrigation Times</span>
+        `;
+              alarmList.appendChild(alarmTitle);
+
+              alarms.forEach((alarm) => {
+                const alarmItem = document.createElement("div");
+                alarmItem.className = "text-sm text-gray-600 ml-6 mb-1";
+                alarmItem.textContent = alarm;
+                alarmList.appendChild(alarmItem);
+              });
+              contentWrapper.appendChild(alarmList);
+            }
+
+            cropCard.appendChild(contentWrapper);
+
+            // Customize button - this will stick to the bottom
+            const customizeBtn = document.createElement("button");
+            customizeBtn.innerHTML = `
+        <i class="fas fa-edit mr-2"></i>
+        Edit Crop
+      `;
+            customizeBtn.className =
+              "w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg cursor-pointer hover:bg-blue-600 transition-colors duration-200 font-medium text-sm mt-auto";
+            customizeBtn.onclick = () =>
+              loadCropForEditing(cropName, alarms, optimal);
+            cropCard.appendChild(customizeBtn);
+
+            container.appendChild(cropCard);
+          });
+        } catch (error) {
+          console.error("Error loading crops:", error);
+          showNotification("Failed to load saved crops.", "error");
+        }
+      }
+
+      async function deleteCrop(cropName) {
+        if (confirm(`Are you sure you want to delete "${cropName}"?`)) {
+          try {
+            await deleteDoc(doc(firestore, "crops", cropName));
+            showNotification(`"${cropName}" deleted successfully!`, "success");
+            loadSavedCrops();
+          } catch (error) {
+            console.error("Error deleting crop:", error);
+            showNotification("Failed to delete crop.", "error");
+          }
+        }
+      }
+
+      window.loadCropForEditing = function (cropName, alarms, optimalMoisture) {
+        document.getElementById("cropName").value = cropName;
+        document.getElementById("optimalMoisture").value = optimalMoisture;
+        const container = document.getElementById("alarmContainer");
+        container.innerHTML = "";
+
+        alarms.forEach((alarm) => {
+          const alarmItem = document.createElement("div");
+          alarmItem.className =
+            "flex items-center gap-3 p-4 bg-blue-50 rounded-lg border border-blue-200";
+
+          let [time, ampm] = alarm.split(" ");
+          let [hour, minute] = time.split(":");
+
+          const hourSelect = createDropdown(1, 12, false);
+          const minuteSelect = createDropdown(0, 59, true);
+          const amPmSelect = createDropdown(["AM", "PM"], false);
+
+          hourSelect.querySelector("span").textContent = hour.padStart(2, "0");
+          minuteSelect.querySelector("span").textContent = minute.padStart(
+            2,
+            "0"
+          );
+          amPmSelect.querySelector("span").textContent = ampm;
+
+          alarmItem.appendChild(hourSelect);
+          alarmItem.appendChild(document.createTextNode(":"));
+          alarmItem.appendChild(minuteSelect);
+          alarmItem.appendChild(amPmSelect);
+
+          const deleteBtn = document.createElement("button");
+          deleteBtn.innerHTML = '<i class="fas fa-times"></i>';
+          deleteBtn.className =
+            "flex items-center justify-center w-8 h-8 bg-red-500 text-white rounded-lg cursor-pointer hover:bg-red-600 transition-colors duration-200 ml-2";
+          deleteBtn.title = "Remove this alarm";
+          deleteBtn.onclick = () => alarmItem.remove();
+
+          alarmItem.appendChild(deleteBtn);
+          container.appendChild(alarmItem);
+        });
+
+        // Scroll to form
+        document
+          .querySelector('[class*="bg-white"]')
+          .scrollIntoView({ behavior: "smooth" });
+      };
+
+      function showNotification(message, type = "info") {
+        // Simple notification implementation
+        alert(message); // You can replace this with a proper toast notification
+      }
+
+      window.addEventListener("DOMContentLoaded", loadSavedCrops);
+
+      // Add initial alarm input
+      window.addEventListener("DOMContentLoaded", addAlarmInput);
+    </script>
+  </body>
+</html>

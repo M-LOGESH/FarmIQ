@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FarmIQ</title>
+    <link rel="stylesheet" href="/src/style.css" />
+    <link rel="icon" type="image/x-icon" href="/logo.png" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+    <!-- Dashboard Header -->
+    <div class="container mx-auto px-4 py-6">
+      <h1 class="text-2xl sm:text-3xl font-bold mb-8">Analytical Dashboard</h1>
+
+      <!-- NPK Cards Container -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Nitrogen Card -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between border border-gray-200"
+        >
+          <div class="relative w-24 h-24">
+            <svg width="96" height="96">
+              <circle
+                class="fill-none stroke-gray-200 stroke-[8px]"
+                cx="48"
+                cy="48"
+                r="42"
+              />
+              <circle
+                id="progressBarN"
+                class="fill-none stroke-green-500 stroke-[8px] stroke-linecap-round transition-all duration-500 ease-in-out"
+                cx="48"
+                cy="48"
+                r="42"
+                style="
+                  transform: rotate(-90deg);
+                  transform-origin: 50% 50%;
+                  stroke-dasharray: 0, 264;
+                "
+              />
+            </svg>
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl text-green-500"
+            >
+              <i class="fas fa-leaf"></i>
+            </div>
+          </div>
+          <div class="flex flex-col items-center ml-4">
+            <p class="text-lg font-bold">Nitrogen (N)</p>
+            <div class="text-2xl font-bold mt-2 text-green-600" id="valueN">
+              0%
+            </div>
+          </div>
+        </div>
+
+        <!-- Phosphorus Card -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between border border-gray-200"
+        >
+          <div class="relative w-24 h-24">
+            <svg width="96" height="96">
+              <circle
+                class="fill-none stroke-gray-200 stroke-[8px]"
+                cx="48"
+                cy="48"
+                r="42"
+              />
+              <circle
+                id="progressBarP"
+                class="fill-none stroke-orange-500 stroke-[8px] stroke-linecap-round transition-all duration-500 ease-in-out"
+                cx="48"
+                cy="48"
+                r="42"
+                style="
+                  transform: rotate(-90deg);
+                  transform-origin: 50% 50%;
+                  stroke-dasharray: 0, 264;
+                "
+              />
+            </svg>
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl text-orange-500"
+            >
+              <i class="fas fa-seedling"></i>
+            </div>
+          </div>
+          <div class="flex flex-col items-center ml-4">
+            <p class="text-lg font-bold">Phosphorus (P)</p>
+            <div class="text-2xl font-bold mt-2 text-orange-600" id="valueP">
+              0%
+            </div>
+          </div>
+        </div>
+
+        <!-- Potassium Card -->
+        <div
+          class="bg-white rounded-xl shadow-lg p-6 flex items-center justify-between border border-gray-200"
+        >
+          <div class="relative w-24 h-24">
+            <svg width="96" height="96">
+              <circle
+                class="fill-none stroke-gray-200 stroke-[8px]"
+                cx="48"
+                cy="48"
+                r="42"
+              />
+              <circle
+                id="progressBarK"
+                class="fill-none stroke-blue-500 stroke-[8px] stroke-linecap-round transition-all duration-500 ease-in-out"
+                cx="48"
+                cy="48"
+                r="42"
+                style="
+                  transform: rotate(-90deg);
+                  transform-origin: 50% 50%;
+                  stroke-dasharray: 0, 264;
+                "
+              />
+            </svg>
+            <div
+              class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-2xl text-blue-500"
+            >
+              <i class="fas fa-water"></i>
+            </div>
+          </div>
+          <div class="flex flex-col items-center ml-4">
+            <p class="text-lg font-bold">Potassium (K)</p>
+            <div class="text-2xl font-bold mt-2 text-blue-600" id="valueK">
+              0%
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Weather Container -->
+      <div
+        class="bg-white rounded-2xl p-6 shadow-lg border border-gray-200 mb-8"
+      >
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Weather Card -->
+          <div
+            class="flex items-center p-4 bg-blue-50 rounded-xl border border-blue-100"
+          >
+            <div class="text-4xl mr-4 text-blue-500">
+              <i id="weather-icon" class="fas fa-cloud"></i>
+            </div>
+            <div class="flex flex-col">
+              <div class="text-xl font-bold" id="temperature-info">
+                Loading...
+              </div>
+              <div
+                class="text-sm font-medium mt-1 text-gray-600"
+                id="weather-condition"
+              >
+                Fetching...
+              </div>
+            </div>
+          </div>
+
+          <!-- Humidity Card -->
+          <div
+            class="flex items-center p-4 bg-green-50 rounded-xl border border-green-100"
+          >
+            <div class="text-4xl mr-4 text-green-500">
+              <i class="fas fa-tint"></i>
+            </div>
+            <div class="flex flex-col">
+              <div class="text-sm text-gray-600">Humidity</div>
+              <div
+                class="text-xl font-bold mt-1 text-green-600"
+                id="humidity-info"
+              >
+                --%
+              </div>
+            </div>
+          </div>
+
+          <!-- Season Card -->
+          <div
+            class="flex items-center p-4 bg-amber-50 rounded-xl border border-amber-100"
+          >
+            <div class="text-4xl mr-4 text-amber-500">
+              <i id="season-icon" class="fas fa-spinner"></i>
+            </div>
+            <div class="flex flex-col">
+              <div class="text-sm text-gray-600">Season</div>
+              <div
+                class="text-xl font-bold mt-1 text-amber-600"
+                id="season-info"
+              >
+                Determining season...
+              </div>
+            </div>
+          </div>
+
+          <!-- Location and Date Card -->
+          <div
+            class="flex flex-col p-4 bg-purple-50 rounded-xl border border-purple-100"
+          >
+            <div class="flex items-center gap-3">
+              <i class="fas fa-map-marker-alt text-purple-500"></i>
+              <div class="text-lg font-bold text-purple-600" id="location-info">
+                Sivaganga
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+              <i class="fas fa-calendar-alt text-purple-500"></i>
+              <div class="text-lg font-bold text-purple-600" id="date-info">
+                Loading date...
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recommended Crop Section -->
+      <h2 class="text-xl sm:text-2xl font-bold mb-4">
+        Optimal Crop Suggestion
+      </h2>
+
+      <!-- Main Prediction Container -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-20">
+        <!-- Input Section -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+          <h3 class="text-lg font-bold mb-4">Input NPK Values</h3>
+          <label for="npkN" class="block mt-4 font-semibold text-gray-700"
+            >Nitrogen (N):</label
+          >
+          <input
+            type="number"
+            id="npkN"
+            placeholder="Enter Nitrogen Value"
+            class="w-full p-3 mt-2 border border-gray-300 rounded-lg text-gray-800 bg-white focus:ring-2 focus:ring-green-500 focus:border-transparent"
+          />
+
+          <label for="npkP" class="block mt-4 font-semibold text-gray-700"
+            >Phosphorus (P):</label
+          >
+          <input
+            type="number"
+            id="npkP"
+            placeholder="Enter Phosphorus Value"
+            class="w-full p-3 mt-2 border border-gray-300 rounded-lg text-gray-800 bg-white focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+          />
+
+          <label for="npkK" class="block mt-4 font-semibold text-gray-700"
+            >Potassium (K):</label
+          >
+          <input
+            type="number"
+            id="npkK"
+            placeholder="Enter Potassium Value"
+            class="w-full p-3 mt-2 border border-gray-300 rounded-lg text-gray-800 bg-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          />
+
+          <button
+            id="predictButton"
+            class="mt-6 w-full p-4 bg-green-600 text-white font-bold text-lg rounded-lg cursor-pointer hover:bg-green-700 transition-colors duration-300"
+          >
+            Predict Suitable Crop
+          </button>
+        </div>
+
+        <!-- Prediction Result -->
+        <div
+          class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200 flex flex-col"
+        >
+          <h2 class="text-xl font-bold text-center mb-6">
+            Crop Recommendation
+          </h2>
+          <div
+            id="predicted-crop-result"
+            class="text-lg font-semibold flex-1 flex items-center justify-center text-center text-gray-600"
+          >
+            Awaiting prediction...
+          </div>
+        </div>
+
+        <!-- Chart Container -->
+        <div class="bg-white p-6 rounded-2xl shadow-lg border border-gray-200">
+          <canvas id="cropPredictionChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+      import {
+        getFirestore,
+        collection,
+        getDocs,
+      } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js";
+      import { Client } from "https://cdn.jsdelivr.net/npm/@gradio/client/dist/index.min.js";
+
+      const firebaseConfig = {
+        apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+        authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+        databaseURL: import.meta.env.VITE_FIREBASE_DATABASE_URL,
+        projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+        storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+        messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+        appId: import.meta.env.VITE_FIREBASE_APP_ID,
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+      const firestore = getFirestore(app);
+
+      let npkValues = { N: 0, P: 0, K: 0 };
+      let season = "";
+      let gradioClient = null;
+
+      // Initialize Gradio client
+      async function initializeGradioClient() {
+        try {
+          gradioClient = await Client.connect("Logesh724/crop-prediction");
+          console.log("Connected to Hugging Face model successfully");
+        } catch (error) {
+          console.error("Error connecting to Hugging Face model:", error);
+          document.getElementById("predicted-crop-result").textContent =
+            "Failed to connect to prediction service";
+        }
+      }
+
+      function updateProgressBar(element, value) {
+        const circumference = 264;
+        const progress = (value / 100) * circumference;
+        element.style.strokeDasharray = `${progress} ${circumference}`;
+      }
+
+      function updateValue(elementId, value) {
+        document.getElementById(elementId).textContent = `${value}%`;
+      }
+
+      onValue(ref(database, "/soil/N"), (snapshot) => {
+        npkValues.N = snapshot.val() || 0;
+        updateValue("valueN", npkValues.N);
+        const progressBar = document.getElementById("progressBarN");
+        if (progressBar) {
+          updateProgressBar(progressBar, npkValues.N);
+        }
+      });
+
+      onValue(ref(database, "/soil/P"), (snapshot) => {
+        npkValues.P = snapshot.val() || 0;
+        updateValue("valueP", npkValues.P);
+        const progressBar = document.getElementById("progressBarP");
+        if (progressBar) {
+          updateProgressBar(progressBar, npkValues.P);
+        }
+      });
+
+      onValue(ref(database, "/soil/K"), (snapshot) => {
+        npkValues.K = snapshot.val() || 0;
+        updateValue("valueK", npkValues.K);
+        const progressBar = document.getElementById("progressBarK");
+        if (progressBar) {
+          updateProgressBar(progressBar, npkValues.K);
+        }
+      });
+
+      function getSeason(month) {
+        let iconClass = "";
+        if (month >= 1 && month <= 2) {
+          season = "Winter";
+          iconClass = "fas fa-snowflake";
+        } else if (month >= 3 && month <= 5) {
+          season = "Summer";
+          iconClass = "fas fa-sun";
+        } else if (month >= 6 && month <= 9) {
+          season = "Southwest Monsoon";
+          iconClass = "fas fa-cloud-showers-heavy";
+        } else {
+          season = "Northeast Monsoon";
+          iconClass = "fas fa-cloud-bolt";
+        }
+
+        document.getElementById("season-info").innerHTML = season;
+        document.getElementById("season-icon").className = `${iconClass}`;
+      }
+
+      document
+        .getElementById("predictButton")
+        .addEventListener("click", async function () {
+          const npkN = document.getElementById("npkN").value;
+          const npkP = document.getElementById("npkP").value;
+          const npkK = document.getElementById("npkK").value;
+          const temperature = document
+            .getElementById("temperature-info")
+            .textContent.replace("°C", "");
+          const humidity = document
+            .getElementById("humidity-info")
+            .textContent.replace("%", "");
+          let season = document.getElementById("season-info").textContent;
+
+          // Validate inputs
+          if (!npkN || !npkP || !npkK) {
+            document.getElementById("predicted-crop-result").textContent =
+              "Please enter all NPK values";
+            return;
+          }
+
+          let seasonEncoded = 2;
+          if (season === "Summer") {
+            seasonEncoded = 3;
+          } else if (season === "Southwest Monsoon") {
+            seasonEncoded = 1;
+          } else if (season === "Northeast Monsoon") {
+            seasonEncoded = 0;
+          }
+
+          const inputData = {
+            N: parseFloat(npkN),
+            P: parseFloat(npkP),
+            K: parseFloat(npkK),
+            temperature: parseFloat(temperature),
+            humidity: parseFloat(humidity),
+            season_encoded: seasonEncoded,
+          };
+
+          try {
+            // Show loading state
+            const button = document.getElementById("predictButton");
+            const originalText = button.innerHTML;
+            button.innerHTML =
+              '<i class="fas fa-spinner fa-spin mr-2"></i> Predicting...';
+            button.disabled = true;
+
+            document.getElementById("predicted-crop-result").textContent =
+              "Processing prediction...";
+
+            // Call Hugging Face model
+            const result = await gradioClient.predict("/predict", inputData);
+
+            // Restore button state
+            button.innerHTML = originalText;
+            button.disabled = false;
+
+            const cropResultDiv = document.getElementById(
+              "predicted-crop-result"
+            );
+
+            // Process the result from Hugging Face
+            if (result && result.data) {
+              // Extract the prediction data from the response
+              let predictionData = result.data[0]; // Get first element from array
+
+              // Handle the complex response format with label and confidences
+              let predictedCrop = "Unknown";
+              let confidences = [];
+
+              if (predictionData && predictionData.label) {
+                predictedCrop = predictionData.label;
+
+                // Extract confidence scores for chart
+                if (
+                  predictionData.confidences &&
+                  Array.isArray(predictionData.confidences)
+                ) {
+                  confidences = predictionData.confidences;
+                }
+              } else if (typeof predictionData === "string") {
+                // If it's a string, try to parse it as JSON
+                try {
+                  const parsedData = JSON.parse(predictionData);
+                  if (parsedData.label) {
+                    predictedCrop = parsedData.label;
+                    if (parsedData.confidences) {
+                      confidences = parsedData.confidences;
+                    }
+                  }
+                } catch (e) {
+                  // If parsing fails, use the string directly
+                  predictedCrop = predictionData;
+                }
+              }
+
+              // Clean up the crop name
+              predictedCrop = predictedCrop.toString().trim();
+
+              // Get top 3 crops from confidences
+              const topCrops = confidences.slice(0, 3);
+
+              // Display the top 3 crops
+              cropResultDiv.innerHTML = `
+                <div class="text-center w-full">
+                    <div class="space-y-4">
+                        ${topCrops
+                          .map(
+                            (crop, index) => `
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 flex items-center justify-center rounded-full ${
+                                      index === 0
+                                        ? "bg-green-100 text-green-600"
+                                        : index === 1
+                                        ? "bg-blue-100 text-blue-600"
+                                        : "bg-orange-100 text-orange-600"
+                                    } font-bold mr-3">
+                                        ${index + 1}
+                                    </div>
+                                    <div class="text-left">
+                                        <div class="text-xl font-bold ${
+                                          index === 0
+                                            ? "text-green-700"
+                                            : index === 1
+                                            ? "text-blue-700"
+                                            : "text-orange-700"
+                                        }">${crop.label}</div>
+                                        <div class="text-sm text-gray-500">Confidence: ${Math.round(
+                                          crop.confidence
+                                        )}%</div>
+                                    </div>
+                                </div>
+                                ${
+                                  index === 0
+                                    ? '<div class="bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded">BEST</div>'
+                                    : ""
+                                }
+                            </div>
+                        `
+                          )
+                          .join("")}
+                    </div>
+                    <div class="text-sm text-gray-500 mt-4">Based on your soil conditions and weather</div>
+                </div>
+            `;
+
+              // Update chart with confidence scores (show top 5 for better visualization)
+              if (window.cropChartInstance) {
+                window.cropChartInstance.destroy();
+              }
+
+              const ctx = document
+                .getElementById("cropPredictionChart")
+                .getContext("2d");
+
+              if (confidences.length > 0) {
+                // Show top 5 crops in chart for better visualization
+                const topChartCrops = confidences.slice(0, 5);
+                const labels = topChartCrops.map((item) => item.label);
+                const data = topChartCrops.map((item) =>
+                  Math.round(item.confidence)
+                );
+
+                // Generate colors for the chart
+                const backgroundColors = [
+                  "#10B981", // Green for 1st
+                  "#3B82F6", // Blue for 2nd
+                  "#F59E0B", // Orange for 3rd
+                  "#8B5CF6", // Purple for 4th
+                  "#EC4899", // Pink for 5th
+                ];
+
+                window.cropChartInstance = new Chart(ctx, {
+                  type: "doughnut",
+                  data: {
+                    labels: labels,
+                    datasets: [
+                      {
+                        data: data,
+                        backgroundColor: backgroundColors.slice(
+                          0,
+                          labels.length
+                        ),
+                        borderWidth: 2,
+                        borderColor: "#FFFFFF",
+                      },
+                    ],
+                  },
+                  options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "bottom",
+                        labels: {
+                          color: "#374151",
+                          font: {
+                            size: 12,
+                            weight: "bold",
+                          },
+                          padding: 15,
+                        },
+                      },
+                      tooltip: {
+                        callbacks: {
+                          label: function (context) {
+                            return `${context.label}: ${context.parsed}% confidence`;
+                          },
+                        },
+                      },
+                      title: {
+                        display: true,
+                        text: "Top 5 Crop Predictions",
+                        color: "#374151",
+                        font: {
+                          size: 16,
+                          weight: "bold",
+                        },
+                        padding: {
+                          top: 10,
+                          bottom: 10,
+                        },
+                      },
+                    },
+                  },
+                });
+              } else {
+                // Fallback chart if no confidence data
+                window.cropChartInstance = new Chart(ctx, {
+                  type: "doughnut",
+                  data: {
+                    labels: [predictedCrop, "Other Options"],
+                    datasets: [
+                      {
+                        data: [85, 15],
+                        backgroundColor: ["#10B981", "#E5E7EB"],
+                        borderWidth: 2,
+                        borderColor: "#FFFFFF",
+                      },
+                    ],
+                  },
+                  options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                      legend: {
+                        position: "bottom",
+                        labels: {
+                          color: "#374151",
+                          font: {
+                            size: 14,
+                            weight: "bold",
+                          },
+                          padding: 20,
+                        },
+                      },
+                      tooltip: {
+                        callbacks: {
+                          label: function (context) {
+                            return `${context.label}: ${context.parsed}% confidence`;
+                          },
+                        },
+                      },
+                      title: {
+                        display: true,
+                        text: "Prediction Confidence",
+                        color: "#374151",
+                        font: {
+                          size: 16,
+                          weight: "bold",
+                        },
+                        padding: {
+                          top: 10,
+                          bottom: 10,
+                        },
+                      },
+                    },
+                  },
+                });
+              }
+            } else {
+              cropResultDiv.textContent =
+                "No prediction available from the model.";
+            }
+          } catch (error) {
+            console.error("Error predicting crop:", error);
+            document.getElementById("predicted-crop-result").textContent =
+              "Prediction failed. Please try again.";
+
+            // Restore button state on error
+            const button = document.getElementById("predictButton");
+            button.innerHTML = "Predict Suitable Crop";
+            button.disabled = false;
+          }
+        });
+
+      window.addEventListener("load", () => {
+        // Initialize Gradio client when page loads
+        initializeGradioClient();
+
+        // Initialize empty chart
+        const ctx = document
+          .getElementById("cropPredictionChart")
+          .getContext("2d");
+        window.cropChartInstance = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels: ["Awaiting Prediction"],
+            datasets: [
+              {
+                data: [100],
+                backgroundColor: ["#E5E7EB"],
+                borderWidth: 2,
+                borderColor: "#FFFFFF",
+              },
+            ],
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: {
+                  color: "#374151",
+                  font: {
+                    size: 14,
+                    weight: "bold",
+                  },
+                  padding: 20,
+                },
+              },
+              title: {
+                display: true,
+                text: "Prediction Confidence",
+                color: "#374151",
+                font: {
+                  size: 16,
+                  weight: "bold",
+                },
+                padding: {
+                  top: 10,
+                  bottom: 10,
+                },
+              },
+            },
+          },
+        });
+      });
+
+      function getWeatherIcon(condition) {
+        if (condition.includes("cloud")) return "fas fa-cloud";
+        if (condition.includes("rain")) return "fas fa-cloud-showers-heavy";
+        if (condition.includes("clear")) return "fas fa-sun";
+        if (condition.includes("storm")) return "fas fa-bolt";
+        if (condition.includes("snow")) return "fas fa-snowflake";
+        return "fas fa-smog";
+      }
+
+      function getCurrentDate() {
+        const options = { month: "long", day: "numeric", weekday: "long" };
+        const date = new Date().toLocaleDateString("en-US", options);
+        return date.replace(/(\d+), (\w+)/, "$2, $1");
+      }
+
+      async function fetchWeatherData() {
+        const apiKey = import.meta.env.VITE_WEATHER_API_KEY;
+        const city = "Madurai";
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city},IN&appid=${apiKey}&units=metric`;
+
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          if (data.cod === 200) {
+            const temperature = data.main.temp;
+            const weatherDescription = data.weather[0].description;
+            const humidity = data.main.humidity;
+            const weatherIconClass = getWeatherIcon(
+              weatherDescription.toLowerCase()
+            );
+
+            document.getElementById(
+              "temperature-info"
+            ).innerHTML = `${temperature}°C`;
+            document.getElementById("humidity-info").innerHTML = `${humidity}%`;
+            document.getElementById("weather-condition").innerHTML =
+              weatherDescription;
+            document.getElementById("weather-icon").className =
+              weatherIconClass;
+
+            const month = new Date().getMonth() + 1;
+            getSeason(month);
+          }
+        } catch (error) {
+          console.error("Error fetching weather data:", error);
+        }
+      }
+
+      document.getElementById("date-info").innerHTML = getCurrentDate();
+      window.onload = fetchWeatherData;
+    </script>
+  </body>
+</html>
